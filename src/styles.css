@@ -1,0 +1,14 @@
+.mt {
+    margin-top: 1em;
+}
+
+.flex {
+    display: flex;
+    justify-content: space-between;
+}
+.flex > * {
+    flex: 1;
+}
+.flex .gf-form-input {
+    width: 100% !important;
+}

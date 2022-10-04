@@ -1,0 +1,130 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - 'master'
+  workflow_dispatch:
+    inputs:
+      BRANCH:
+        required: true
+        default: 'master'
+      DEPLOY:
+        required: true
+        default: 'false'
+        type: choice
+        options:
+        - 'true'
+        - 'false'
+      ENV:
+        required: true
+        default: 'testing'
+        type: choice
+        options:
+        - testing
+        - staging
+        - production
+
+env:
+  BRANCH: ${{ github.head_ref || github.ref_name || github.event.inputs.BRANCH }}
+  DEPLOY: ${{ github.event.inputs.DEPLOY || 'false' }}
+  ENV: ${{ github.event.inputs.ENV  || 'testing' }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ env.BRANCH }}
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2.1.2
+        with:
+          node-version: "14.x"
+
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - name: Cache yarn cache
+        uses: actions/cache@v2
+        id: cache-yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: Cache node_modules
+        id: cache-node-modules
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Build and test frontend
+        run: yarn build
+
+      - name: Setup build environment
+        id: build_environment
+        run: echo "::set-output name=BUILD_VERSION::$(jq -r .version package.json)"
+
+      - name: Package plugin
+        run: |
+          mv dist netdata-datasource
+          zip "netdata-datasource-${{ steps.build_environment.outputs.BUILD_VERSION }}.zip" netdata-datasource -r
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: netdata-datasource-${{ steps.build_environment.outputs.BUILD_VERSION }}.zip
+          path: ./netdata-datasource-${{ steps.build_environment.outputs.BUILD_VERSION }}.zip
+
+    outputs:
+      artifact_name: netdata-datasource-${{ steps.build_environment.outputs.BUILD_VERSION }}.zip
+
+  internal-deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup deploy environment
+        id: deploy_environment
+        run: |
+          case $GITHUB_EVENT_NAME in
+            workflow_dispatch)
+              echo "::set-output name=ENV::${{ env.ENV }}"
+              echo "::set-output name=DEPLOY::${{ env.DEPLOY }}"
+              ;;
+            pull_request)
+              echo "::set-output name=ENV::staging"
+              echo "::set-output name=DEPLOY::false"
+              ;;
+            push)
+              echo "::set-output name=ENV::staging"
+              echo "::set-output name=DEPLOY::true"
+              ;;
+            *)
+              echo "::set-output name=ENV::staging"
+              echo "::set-output name=DEPLOY::false"
+              ;;
+          esac
+
+      - name: Update Netdata Infra
+        if: ${{ steps.deploy_environment.outputs.DEPLOY == 'true' }}
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          token: ${{ secrets.NETDATABOT_GITHUB_TOKEN }}
+          repo: ${{ secrets.NETDATA_INFRA_REPO }}
+          workflow: Netdata Grafana Plugin Deploy
+          ref: master
+          inputs: '{"artifact_name": "${{ needs.build.outputs.artifact_name }}", "env": "${{ steps.deploy_environment.outputs.ENV }}", "workflow_run_id": "${{ github.run_id }}"}'
+        continue-on-error: true

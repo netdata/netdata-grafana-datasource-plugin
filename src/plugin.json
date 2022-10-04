@@ -1,0 +1,53 @@
+{
+  "$schema": "https://raw.githubusercontent.com/grafana/grafana/master/docs/sources/developers/plugins/plugin.schema.json",
+  "name": "netdata",
+  "type": "datasource",
+  "id": "netdata-datasource",
+  "metrics": true,
+  "info": {
+    "description": "netdata datasource plugin",
+    "author": {
+      "name": "Netdata",
+      "url": "https://www.netdata.cloud"
+    },
+    "keywords": ["netdata", "datasource", "plugin"],
+    "logos": {
+      "small": "img/logo.svg",
+      "large": "img/logo.svg"
+    },
+    "links": [
+      {
+        "name": "Website",
+        "url": "https://github.com/grafana/grafana-starter-datasource"
+      },
+      {
+        "name": "License",
+        "url": "https://github.com/grafana/grafana-starter-datasource/blob/master/LICENSE"
+      }
+    ],
+    "screenshots": [],
+    "version": "%VERSION%",
+    "updated": "%TODAY%"
+  },
+  "routes": [
+    {
+      "path": "base",
+      "url": "https://app.netdata.cloud/api",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "content": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "content": "Bearer {{ .SecureJsonData.apiToken }}"
+        }
+      ]
+    }
+  ],
+  "dependencies": {
+    "grafanaDependency": ">=7.1.0",
+    "grafanaVersion": "7.1.x",
+    "plugins": []
+  }
+}
