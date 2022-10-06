@@ -105,7 +105,7 @@ This script will:
 3. Copy the contents of the Netdata data source plugin to the new plugin folder created on step 2
 
    `unzip netdata-datasource-<version_number>.zip`
-   `cp -rf ./netdata-datasource * /var/lib/grafana/plugins/netdata/`
+   `cp -rf netdata-datasource/ /var/lib/grafana/plugins/netdata/`
 
 4. Ensure that Netdata plugin which currently isn’t signed can be registered
 
