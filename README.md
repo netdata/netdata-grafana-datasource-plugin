@@ -113,7 +113,7 @@ This script will:
 
    ```
    unzip netdata-datasource-<version_number>.zip
-   cp -rf netdata-datasource/ /var/lib/grafana/plugins
+   cp -rf netdata-datasource /var/lib/grafana/plugins
    ```
 
 4. Ensure that Netdata plugin which currently isn’t signed can be registered
@@ -146,20 +146,14 @@ This script will:
    * Going to https://github.com/netdata/netdata-grafana-datasource-plugin/releases/latest
    * Downloading the zip file with the latest release, e.g. netdata-datasource-1.0.12.zip
 
-2. Grafana plugins, by default, should be under C:\Program Files\GrafanaLabs\grafana\data\plugins. Create a folder for netdata
-
-   ```
-   mkdir ‘C:\Program Files\GrafanaLabs\grafana\data\plugins\netdata’
-   ```
-
-3. Copy the contents of the Netdata data source plugin to the new plugin folder created on step 2
+2. Copy the contents of the Netdata data source plugin to the new plugin folder created on step 2
 
    ```
    Expand-Archive \.netdata-datasource-<version_number>.zip \.
    xcopy .\netdata-datasource\ "C:\Program Files\GrafanaLabs\grafana\data\plugins\netdata-datasource\" /E
    ```
 
-4. Ensure that Netdata plugin which currently isn’t signed can be registered
+3. Ensure that Netdata plugin which currently isn’t signed can be registered
 
 	```
    notepad ‘C:\Program Files\GrafanaLabs\grafana\conf\default.ini’
@@ -171,7 +165,7 @@ This script will:
    allow_loading_unsigned_plugins = netdata-datasource
    ```
 
-5. After adding the plugin a restart of grafana server is needed
+4. After adding the plugin a restart of grafana server is needed
 
    ```
    net stop Grafana
