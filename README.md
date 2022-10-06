@@ -63,10 +63,10 @@ To remove container:
 >    `setup-demo-environment.sh remove`
 
 This script will:
+1. Spin up a grafana container without starting grafana itself
 1. Retrieve the latest available release of the Netdata datasource plugin
-2. Spin up a grafana container running on port `3000` that will allow installing  this unsigned plugin
-3. Install the Netdata datasource plugin in `/var/lib/grafana/plugins`
-4. Start the container again
+1. Install the Netdata datasource plugin in /var/lib/grafana/plugins
+1. Start grafana
 
 #### Manual step-by-step
 
@@ -76,7 +76,9 @@ This script will:
 
 2. Ensure you have the desired version of the plugin you want to install, get it from github releases 
 
-   `git clone https://github.com/netdata/netdata-grafana-datasource-plugin`
+   ```curl -s https://api.github.com/repos/netdata/netdata-grafana-datasource-plugin/releases/latest \
+   jq -r '.assets[] | select(.name|match("zip$")) | .browser_download_url'
+   ```
 
 3. Grafana plugins, by default, should be under /var/lib/grafana/plugins. Create a folder for netdata inside the container. Enter in an interactive session
 
@@ -85,14 +87,16 @@ This script will:
 
 4. Copy the contents of the Netdata data source plugin to the new plugin folder created on step 2
 
-   `tar -xvf netdata…..tar.gz`
-   `docker cp dist grafana:/var/lib/grafana/plugins/`
+   `unzip netdata-datasource-<version_number>.zip`
+   `docker cp netdata-datasource grafana:/var/lib/grafana/plugins/netdata/`
 
 ### Linux (local)
 
 1. Ensure you have the desired version of the plugin you want to install, get it from github releases 
 
-   `git clone https://github.com/netdata/netdata-grafana-datasource-plugin`
+   ```curl -s https://api.github.com/repos/netdata/netdata-grafana-datasource-plugin/releases/latest \
+   jq -r '.assets[] | select(.name|match("zip$")) | .browser_download_url'
+   ```
 
 2. Grafana plugins, by default, should be under /var/lib/grafana/plugins. Create a folder for netdata
 
@@ -100,8 +104,8 @@ This script will:
 
 3. Copy the contents of the Netdata data source plugin to the new plugin folder created on step 2
 
-   `tar -xvf netdata…..tar.gz`
-   `cp -rf dist/* /var/lib/grafana/plugins/netdata/`
+   `unzip netdata-datasource-<version_number>.zip`
+   `cp -rf ./netdata-datasource * /var/lib/grafana/plugins/netdata/`
 
 4. Ensure that Netdata plugin which currently isn’t signed can be registered
 
@@ -123,7 +127,9 @@ This script will:
 
 1. Ensure you have the desired version of the plugin you want to install, get it from github releases 
 
-   `git clone https://github.com/netdata/netdata-grafana-datasource-plugin`
+   ```curl -s https://api.github.com/repos/netdata/netdata-grafana-datasource-plugin/releases/latest \
+   jq -r '.assets[] | select(.name|match("zip$")) | .browser_download_url'
+   ```
 
 2. Grafana plugins, by default, should be under C:\Program Files\GrafanaLabs\grafana\data\plugins. Create a folder for netdata
 
@@ -131,10 +137,10 @@ This script will:
 
 3. Copy the contents of the Netdata data source plugin to the new plugin folder created on step 2
 
-   `wzunzip -d file.gz`
+   `wzunzip -d netdata-datasource-<version_number>.zip`
    or
-   `gzip -d < file.tar.gz | tar xvf -`
-   `cp .\dist\* "C:\Program Files\GrafanaLabs\grafana\data\plugins\netdata"`
+   `gzip -d < netdata-datasource-<version_number>.zip `
+   `cp .\netdata-datasource\* "C:\Program Files\GrafanaLabs\grafana\data\plugins\netdata"`
 
 4. Ensure that Netdata plugin which currently isn’t signed can be registered
 
