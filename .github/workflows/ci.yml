@@ -29,7 +29,7 @@ on:
         - production
 
 env:
-  BRANCH: ${{ github.head_ref || github.ref_name || github.event.inputs.BRANCH }}
+  BRANCH: ${{ github.event.inputs.BRANCH || github.ref }}
   DEPLOY: ${{ github.event.inputs.DEPLOY || 'false' }}
   ENV: ${{ github.event.inputs.ENV  || 'testing' }}
 
