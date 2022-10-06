@@ -146,7 +146,7 @@ This script will:
    * Going to https://github.com/netdata/netdata-grafana-datasource-plugin/releases/latest
    * Downloading the zip file with the latest release, e.g. netdata-datasource-1.0.12.zip
 
-2. Copy the contents of the Netdata data source plugin to the new plugin folder created on step 2
+2. Copy the contents of the Netdata data source plugin to the Grafana plugins directory, by default C:\Program Files\GrafanaLabs\grafana\data\plugins
 
    ```
    Expand-Archive \.netdata-datasource-<version_number>.zip \.
