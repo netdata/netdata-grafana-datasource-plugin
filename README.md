@@ -34,9 +34,9 @@ Once you have all your nodes connected to Netdata Hub you must proceed with crea
 
 ![image](https://user-images.githubusercontent.com/82235632/189399116-2df5da8a-49d2-42b2-bdec-64b7f7d9bd83.png)
 
-### 3. Install Netdata data source plugin on Grafana Cloud or locally
+### 3. Install Netdata data source plugin on Grafana OSS or Enterprise (local)
 
-For detailed instructions on how to install the plugin on Grafana Cloud or locally, please checkout the Plugin installation docs.
+For detailed instructions on how to install the plugin on Grafana OSS or Enterprise check the section [How to install the plugin?](#how-to-install-the-plugin).
 
 ### 4. Add your API token to the Netdata data source plugin configuration
 
