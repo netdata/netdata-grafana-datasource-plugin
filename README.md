@@ -1,3 +1,13 @@
+<!--
+title: "Netdata data source for Grafana"
+description: "See Netdata metrics in Grafana."
+custom_edit_url: "https://github.com/netdata/netdata/edit/master/exporting/WALKTHROUGH.md"
+sidebar_label: "Grafana"
+learn_status: "Published"
+learn_rel_path: "Integrations/Export"
+sidebar_position: 90
+-->
+
 # Netdata data source for Grafana
 
 [![Build](https://github.com/grafana/grafana-starter-datasource/workflows/CI/badge.svg)](https://github.com/grafana/grafana-starter-datasource/actions?query=workflow%3A%22CI%22)
