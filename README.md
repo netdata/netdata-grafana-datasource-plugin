@@ -189,8 +189,3 @@ For any of the above steps if you prefer to build this plugin locally instead of
 
 3. Place the contents of the `/dist` folder under the netdata folder in Grafana plugins directory.
 
-## Learn more
-
-- What is Netdata? - https://learn.netdata.cloud/docs/overview/what-is-netdata
-- Netdata Cloud - https://learn.netdata.cloud/docs/cloud
-- Netdata Agent - https://learn.netdata.cloud/docs/get-started
