@@ -154,7 +154,7 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, onChange, onRunQuery 
     setSelectedAggreagations(Aggreagations[0]);
 
     fetchRooms(v.value || '');
-    onChange({ spaceId: v.value } as MyQuery);
+    onChange({ ...query, spaceId: v.value });
     onRunQuery();
   };
 
@@ -173,7 +173,7 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, onChange, onRunQuery 
 
     fetchContexts(selectedSpace?.value || '', v.value || '');
     fetchNodes(selectedSpace?.value || '', v.value || '');
-    onChange({ spaceId: spaceId, roomId: v.value } as MyQuery);
+    onChange({ ...query, spaceId: spaceId, roomId: v.value });
     onRunQuery();
   };
 
@@ -190,7 +190,6 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, onChange, onRunQuery 
 
     fetchDimensions({ spaceId, roomId, contextId: v.value, nodeIDs: selectedNodes?.map((n: any) => n.value) || [] });
     onChange({ ...query, contextId: v.value });
-    onChange({ spaceId, roomId, contextId: v.value } as MyQuery);
     onRunQuery();
   };
 
@@ -207,7 +206,7 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, onChange, onRunQuery 
 
     fetchDimensions({ spaceId, roomId, contextId, nodeIDs: data });
     setSelectedNodes(data);
-    onChange({ spaceId, roomId, contextId, nodes: data } as MyQuery);
+    onChange({ ...query, spaceId, roomId, contextId, nodes: data } as MyQuery);
     onRunQuery();
   };
 

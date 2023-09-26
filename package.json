@@ -1,6 +1,6 @@
 {
-  "name": "netdata-datasource",
-  "version": "1.0.12",
+  "name": "netdatacloud-netdata-datasource",
+  "version": "2.0.0",
   "description": "netdata datasource plugin",
   "scripts": {
     "build": "grafana-toolkit plugin:build",
@@ -13,9 +13,9 @@
   "author": "netdata",
   "license": "Apache-2.0",
   "devDependencies": {
-    "@grafana/data": "latest",
-    "@grafana/toolkit": "latest",
-    "@grafana/ui": "latest",
+    "@grafana/data": "8.5.5",
+    "@grafana/toolkit": "8.5.5",
+    "@grafana/ui": "8.5.5",
     "@testing-library/jest-dom": "5.4.0",
     "@testing-library/react": "^10.0.2",
     "@testing-library/react-hooks": "^8.0.1",
