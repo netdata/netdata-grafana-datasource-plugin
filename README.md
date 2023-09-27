@@ -46,7 +46,8 @@ Once you have added your API token to Netdata data source plugin you’re ready 
 
 ## How to install the plugin?
 
-To start using the Netdata data source plugin on your Grafana environment, local or Cloud, you need to install the plugin manually - it currently isn't signed. Here are some tips to get through this depending on your setup:
+To start using the Netdata data source plugin on your Grafana environment, local or Cloud. Here are some tips to get through this depending on your setup:
+* Directly through the Grafana UI
 * Docker
 * Linux (local)
 * Windows (local - powershell)
@@ -76,10 +77,10 @@ This script will:
 
 #### Manual step-by-step
 
-1. Setup your grafana docker container with the the permissions to load netdata plugin as unsinged
+1. Setup your grafana docker container with the the permissions to load netdata plugin
 
    ```
-   docker run -d --env GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS=netdata-datasource --name=grafana grafana/grafana
+   docker run -d --name=grafana grafana/grafana
    ```
 
 2. Ensure you have the desired version of the plugin you want to install, get it from github releases 
@@ -116,19 +117,7 @@ This script will:
    cp -rf netdata-datasource /var/lib/grafana/plugins
    ```
 
-4. Ensure that Netdata plugin which currently isn’t signed can be registered
-
-   ```
-   vi /etc/grafana/grafana.ini
-   ```
-
-	On `allow_loading_unsigned_plugins` entry add **netdata-datasource**
-
-   ```
-   allow_loading_unsigned_plugins = netdata-datasource
-   ```
-
-5. After adding the plugin a restart of grafana server is needed
+3. After adding the plugin a restart of grafana server is needed
 
    For init.d based services you can use the command:
    ```
@@ -153,19 +142,7 @@ This script will:
    xcopy .\netdata-datasource\ "C:\Program Files\GrafanaLabs\grafana\data\plugins\netdata-datasource\" /E
    ```
 
-3. Ensure that Netdata plugin which currently isn’t signed can be registered
-
-	```
-   notepad ‘C:\Program Files\GrafanaLabs\grafana\conf\default.ini’
-   ```
-
-	On `allow_loading_unsigned_plugins` entry add **netdata-datasource**
-
-   ```
-   allow_loading_unsigned_plugins = netdata-datasource
-   ```
-
-4. After adding the plugin a restart of grafana server is needed
+3. After adding the plugin a restart of grafana server is needed
 
    ```
    net stop Grafana
