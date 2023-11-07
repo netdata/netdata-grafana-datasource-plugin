@@ -24,7 +24,7 @@ export const useFetchDimensions = (baseUrl: string) => {
   const [isError, setIsError] = React.useState(false);
   const [allDimensions, setDimensions] = React.useState<any[]>([]);
   const [filters, setFilters] = React.useState<{ [key in string]: [] }>({});
-  const [groupingByList, setGroupingByList] = React.useState<Dropdown[]>([]);
+  const [groupingByList, setGroupingByList] = React.useState<Dropdown[]>(GroupByList);
   const [units, setUnits] = React.useState('');
 
   const fetchDimensions = async ({ spaceId, roomId, contextId, nodeIDs }: any) => {

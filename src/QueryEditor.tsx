@@ -54,7 +54,7 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, onChange, onRunQuery 
     setTotalInstances(data.data.nodes.reduce((acc: number, node: any) => acc + node.chartIDs.length, 0));
   };
 
-  const IsGroupFunctionAvailable = React.useCallback(() => {
+  const isGroupFunctionAvailable = React.useCallback(() => {
     if (groupBy === 'instance' || selectedGroupBy?.value === 'instance') {
       return false;
     }
@@ -335,7 +335,7 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, onChange, onRunQuery 
           labelWidth={10}
           inputEl={
             <Select
-              disabled={!IsGroupFunctionAvailable()}
+              disabled={!isGroupFunctionAvailable()}
               options={Methods}
               value={selectedMethod}
               onChange={onMethodChange}
