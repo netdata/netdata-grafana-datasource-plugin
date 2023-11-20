@@ -147,7 +147,7 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, onChange, onRunQuery 
     setSelectedNodes([]);
     setSelectedContext({});
     setSelectedDimensions([]);
-    setSelectedGroupBy(GroupByList[0]);
+    setSelectedGroupBy();
     setSelectedFilter({ label: 'No filter', value: 'No filter' });
     setSelectedFilterValue({});
     setSelectedMethod(Methods[0]);
@@ -165,7 +165,7 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, onChange, onRunQuery 
     setSelectedNodes([]);
     setSelectedContext({});
     setSelectedDimensions([]);
-    setSelectedGroupBy(GroupByList[0]);
+    setSelectedGroupBy();
     setSelectedFilter({ label: 'No filter', value: 'No filter' });
     setSelectedFilterValue({});
     setSelectedMethod(Methods[0]);
@@ -182,7 +182,7 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, onChange, onRunQuery 
 
     // reset the rest of inputs
     setSelectedDimensions([]);
-    setSelectedGroupBy(GroupByList[0]);
+    setSelectedGroupBy();
     setSelectedFilter({ label: 'No filter', value: 'No filter' });
     setSelectedFilterValue({});
     setSelectedMethod(Methods[0]);
@@ -198,7 +198,7 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, onChange, onRunQuery 
 
     // reset the rest of inputs
     setSelectedDimensions([]);
-    setSelectedGroupBy(GroupByList[0]);
+    setSelectedGroupBy();
     setSelectedFilter({ label: 'No filter', value: 'No filter' });
     setSelectedFilterValue({});
     setSelectedMethod(Methods[0]);
