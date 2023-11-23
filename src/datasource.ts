@@ -26,12 +26,7 @@ export class DataSource extends DataSourceApi<MyQuery, MyDataSourceOptions> {
 
     const promises = options.targets.map(
       ({ spaceId, roomId, contextId, nodes, groupBy, method, refId, dimensions, filterBy, filterValue, hide }) => {
-        if (hide) {
-          const frame = new MutableDataFrame({
-            refId: refId,
-          });
-          return Promise.resolve(frame);
-        }
+        if (hide) return null;
 
         if (!spaceId || !roomId || !contextId) {
           const frame = new MutableDataFrame({
@@ -85,7 +80,7 @@ export class DataSource extends DataSourceApi<MyQuery, MyDataSourceOptions> {
       }
     );
 
-    return Promise.all(promises).then((data) => ({ data }));
+    return Promise.all(promises.filter(Boolean)).then((data) => ({ data }));
   }
 
   async testDatasource() {
