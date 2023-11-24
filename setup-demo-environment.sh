@@ -5,7 +5,7 @@ set -e -o pipefail
 
 readonly CONTAINER_NAME="grafana-netdata-plugin-demo"
 readonly CONTAINER_PORT=3000
-readonly GRAFANA_DOCKER_IMAGE="grafana/grafana:9.1.6"
+readonly GRAFANA_DOCKER_IMAGE="grafana/grafana:10.2.2"
 readonly NETDATA_PLUGIN_REPO="netdata/netdata-grafana-datasource-plugin"
 readonly PROGNAME=$(basename $0)
 readonly ARG=$1

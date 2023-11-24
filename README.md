@@ -15,6 +15,10 @@ To start using the Netdata data source plugin on your Grafana environment, local
 
 The installations below will use different tools like: curl, docker, jq, wget, unzip and xcopy.
 
+### Directly through the Grafana UI
+
+Netdata is available in the Grafana Plugin catalog.
+
 ### Docker
 
 #### Pre-buit script - setup-demo-environment
