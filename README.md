@@ -17,7 +17,8 @@ The installations below will use different tools like: curl, docker, jq, wget, u
 
 ### Directly through the Grafana UI
 
-Netdata is available in the Grafana Plugin catalog.
+Netdata is available in the Grafana Plugin catalog that can be accessed from the Grafana UI. 
+For details on how to: use the Plugin catalog, manage the plugins (install, update, uninstall), and other information, please check [this documentation](https://grafana.com/docs/grafana/latest/administration/plugin-management/#plugin-catalog).
 
 ### Docker
 
