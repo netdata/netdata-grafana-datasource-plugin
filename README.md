@@ -1,58 +1,24 @@
 # Netdata data source for Grafana
 
-[![Build](https://github.com/grafana/grafana-starter-datasource/workflows/CI/badge.svg)](https://github.com/grafana/grafana-starter-datasource/actions?query=workflow%3A%22CI%22)
-
 _Enhanced high-fidelity troubleshooting data source for the Open Source community!_
 
 ![Image](https://user-images.githubusercontent.com/82235632/193311991-a6d167ab-b845-49b7-817c-976b780e427e.png)
 
-## What is Netdata data source plugin for Grafana?
-
-We are huge fans of Open Source culture and it is rooted deeply into our DNA, so we thought that the Open Source community would hugely benefit from Netdata providing a Grafana data source plugin that would expose its powerful data collection engine.
-
-With this data source plugin we expose the troubleshooting capabilities of Netdata in Grafana, making them available more widely. Some of the key capabilities:
-- Real-time monitoring with single-second granularity.
-- Installation and out-of-the-box integrations available in seconds from one line of code.
-- 2,000+ metrics from across your whole Infrastructure, with insightful metadata associated with them.
-- Access to our fresh ML metrics (anomaly rates) - exposing our ML capabilities at the edge!
-
-
-## Getting started
-
-### 1. Connect your Nodes to Netdata Cloud
-
-Netdata’s data source plugin connects directly to our Netdata Cloud API’s, meaning that you’ll need to have your nodes (hosts) connected to [Netdata Cloud](https://app.netdata.cloud/?utm_source=grafana&utm_content=data_source_plugin) in order to be able to have them exposed on our plugin. For security purposes you will also need an API token for authentication (which you can get from within your Netdata profile).
-
-Note: If you don't have an account [sign-up](https://app.netdata.cloud/?utm_source=grafana&utm_content=data_source_plugin) for free to get one! 
-
-> Netdata Agent will need to be installed and running on your server, VM and/or cluster, so that it can start collecting all the relevant metrics you have from the server 
-and applications running on it. More info at https://learn.netdata.cloud/docs/get-started.
-
-### 2. Ensure you have an API Token for authentication purposes.
-
-Once you have all your nodes connected to Netdata Hub you must proceed with creating an API token, which will be linked to your Netdata Cloud  account. The API token provides a means to authenticate external calls to our APIs, allowing the same access as you to the Spaces and Rooms you can see on Netdata Hub.
-
-![image](https://user-images.githubusercontent.com/82235632/189399116-2df5da8a-49d2-42b2-bdec-64b7f7d9bd83.png)
-
-### 3. Install Netdata data source plugin on Grafana OSS or Enterprise (local)
-
-For detailed instructions on how to install the plugin on Grafana OSS or Enterprise check the section [How to install the plugin?](#how-to-install-the-plugin).
-
-### 4. Add your API token to the Netdata data source plugin configuration
-
-Once you have added your API token to Netdata data source plugin you’re ready to start taking advantage of Netdata’s troubleshooting capabilities in Grafana by starting creating your charts and dashboards!
-
-![image](https://user-images.githubusercontent.com/82235632/189398814-1efbf1c7-1a62-4d5f-abe8-6a9297a3f008.png)
-
 ## How to install the plugin?
 
-To start using the Netdata data source plugin on your Grafana environment, local or Cloud, you need to install the plugin manually - it currently isn't signed. Here are some tips to get through this depending on your setup:
+To start using the Netdata data source plugin on your Grafana environment, local or Cloud. Here are some tips to get through this depending on your setup:
+* Directly through the Grafana UI
 * Docker
 * Linux (local)
 * Windows (local - powershell)
 * Building the plugin locally
 
 The installations below will use different tools like: curl, docker, jq, wget, unzip and xcopy.
+
+### Directly through the Grafana UI
+
+Netdata is available in the Grafana Plugin catalog that can be accessed from the Grafana UI. 
+For details on how to: use the Plugin catalog, manage the plugins (install, update, uninstall), and other information, please check [this documentation](https://grafana.com/docs/grafana/latest/administration/plugin-management/#plugin-catalog).
 
 ### Docker
 
@@ -76,10 +42,10 @@ This script will:
 
 #### Manual step-by-step
 
-1. Setup your grafana docker container with the the permissions to load netdata plugin as unsinged
+1. Setup your grafana docker container with the the permissions to load netdata plugin
 
    ```
-   docker run -d --env GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS=netdata-datasource --name=grafana grafana/grafana
+   docker run -d --name=grafana grafana/grafana
    ```
 
 2. Ensure you have the desired version of the plugin you want to install, get it from github releases 
@@ -116,19 +82,7 @@ This script will:
    cp -rf netdata-datasource /var/lib/grafana/plugins
    ```
 
-4. Ensure that Netdata plugin which currently isn’t signed can be registered
-
-   ```
-   vi /etc/grafana/grafana.ini
-   ```
-
-	On `allow_loading_unsigned_plugins` entry add **netdata-datasource**
-
-   ```
-   allow_loading_unsigned_plugins = netdata-datasource
-   ```
-
-5. After adding the plugin a restart of grafana server is needed
+3. After adding the plugin a restart of grafana server is needed
 
    For init.d based services you can use the command:
    ```
@@ -153,19 +107,7 @@ This script will:
    xcopy .\netdata-datasource\ "C:\Program Files\GrafanaLabs\grafana\data\plugins\netdata-datasource\" /E
    ```
 
-3. Ensure that Netdata plugin which currently isn’t signed can be registered
-
-	```
-   notepad ‘C:\Program Files\GrafanaLabs\grafana\conf\default.ini’
-   ```
-
-	On `allow_loading_unsigned_plugins` entry add **netdata-datasource**
-
-   ```
-   allow_loading_unsigned_plugins = netdata-datasource
-   ```
-
-4. After adding the plugin a restart of grafana server is needed
+3. After adding the plugin a restart of grafana server is needed
 
    ```
    net stop Grafana
@@ -188,4 +130,3 @@ For any of the above steps if you prefer to build this plugin locally instead of
    ```
 
 3. Place the contents of the `/dist` folder under the netdata folder in Grafana plugins directory.
-

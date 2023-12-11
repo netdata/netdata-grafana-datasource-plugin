@@ -8,6 +8,8 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
+    env:
+      GRAFANA_API_KEY: ${{ secrets.GRAFANA_API_KEY }}
 
     steps:
       - uses: actions/checkout@v2
@@ -48,6 +50,10 @@ jobs:
       - name: Build and test frontend
         run: yarn build
 
+      - name: Sign plugin
+        run: yarn sign
+        if: ${{ env.GRAFANA_API_KEY != '' }}
+
       - name: Get plugin metadata
         id: metadata
         run: |
@@ -82,7 +88,7 @@ jobs:
           mv dist "${{ steps.metadata.outputs.plugin-id }}"
           zip "${{ steps.metadata.outputs.archive }}" "${{ steps.metadata.outputs.plugin-id }}" -r
           md5sum "${{ steps.metadata.outputs.archive }}" > "${{ steps.metadata.outputs.archive-checksum }}"
-          echo "checksum=$(cat \"./${{ steps.metadata.outputs.archive-checksum }}\" | cut -d' ' -f1)" >> $GITHUB_OUTPUT
+          echo "checksum=$(cat './${{ steps.metadata.outputs.archive-checksum }}' | cut -d' ' -f1)" >> $GITHUB_OUTPUT
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v2

@@ -5,7 +5,7 @@ set -e -o pipefail
 
 readonly CONTAINER_NAME="grafana-netdata-plugin-demo"
 readonly CONTAINER_PORT=3000
-readonly GRAFANA_DOCKER_IMAGE="grafana/grafana:9.1.6"
+readonly GRAFANA_DOCKER_IMAGE="grafana/grafana:10.2.2"
 readonly NETDATA_PLUGIN_REPO="netdata/netdata-grafana-datasource-plugin"
 readonly PROGNAME=$(basename $0)
 readonly ARG=$1
@@ -30,7 +30,7 @@ function run() {
   declare plugin_url
   plugin_url="$(get_latest_plugin)"
   set -x
-  docker run -d -p 127.0.0.1::$CONTAINER_PORT -e GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS=netdata-datasource \
+  docker run -d -p 127.0.0.1::$CONTAINER_PORT \
     --name $CONTAINER_NAME --entrypoint /bin/sleep $GRAFANA_DOCKER_IMAGE inf
   docker exec -it $CONTAINER_NAME \
     bash -c "cd /var/lib/grafana/plugins && wget $plugin_url && unzip *.zip"

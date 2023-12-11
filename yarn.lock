@@ -1098,7 +1098,7 @@
   resolved "https://registry.yarnpkg.com/@grafana/aws-sdk/-/aws-sdk-0.0.35.tgz#ef1a1294decdb859f04f170f33cf45277703bb87"
   integrity sha512-EUi4hF0NQ7c9+XfUvRfrCkxPVkzRFv4VdSMlUOyyg7FynKq4Do9HF+4gR30Krt0ct6zmloPIx2AAIHL5898g7A==
 
-"@grafana/data@8.5.5", "@grafana/data@latest":
+"@grafana/data@8.5.5":
   version "8.5.5"
   resolved "https://registry.yarnpkg.com/@grafana/data/-/data-8.5.5.tgz#64f72bc81a02ee32faf07e574aaacf828b3fa519"
   integrity sha512-K/TZQ5DCT8lTDCuMiVaJqUpdiziUJK3ggHGcyB0RZV5fneq8VpiySIuZyii2/b2tBNKz0cRVS+LoI3DerlsH+g==
@@ -1194,7 +1194,7 @@
     tiny-invariant "^1.0.1"
     tiny-warning "^0.0.3"
 
-"@grafana/toolkit@latest":
+"@grafana/toolkit@8.5.5":
   version "8.5.5"
   resolved "https://registry.yarnpkg.com/@grafana/toolkit/-/toolkit-8.5.5.tgz#2204bd18de0d05f72a19ada13aae8594a16657a1"
   integrity sha512-6N9lN+S1OXH3O4I73PScH2RmW1l/gvzq3tSFZPAyWHTz/QlZDbEGuS1yMMsmmFfr4FE9iOiGqT7Emp9uvVngKg==
@@ -1282,7 +1282,7 @@
   resolved "https://registry.yarnpkg.com/@grafana/tsconfig/-/tsconfig-1.2.0-rc1.tgz#10973c978ec95b0ea637511254b5f478bce04de7"
   integrity sha512-+SgQeBQ1pT6D/E3/dEdADqTrlgdIGuexUZ8EU+8KxQFKUeFeU7/3z/ayI2q/wpJ/Kr6WxBBNlrST6aOKia19Ag==
 
-"@grafana/ui@8.5.5", "@grafana/ui@latest":
+"@grafana/ui@8.5.5":
   version "8.5.5"
   resolved "https://registry.yarnpkg.com/@grafana/ui/-/ui-8.5.5.tgz#4382234529b6c01035b084b01f949134562bc0ef"
   integrity sha512-z79v79B8i6z5cVN7BvZIWQZIEbiyxGoCYl4CM+fSx79+rN2+8hbwzCW7IZttL+Auak0Y7fKqSvWXzwvZ21KnsQ==

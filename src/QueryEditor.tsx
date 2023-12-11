@@ -33,9 +33,9 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, onChange, onRunQuery 
     value: query.contextId,
   });
   const [selectedDimensions, setSelectedDimensions] = React.useState<Dropdown[]>();
-  const [selectedGroupBy, setSelectedGroupBy] = React.useState<Dropdown>();
+  const [selectedGroupBy, setSelectedGroupBy] = React.useState<Dropdown>(GroupByList[0]);
   const [selectedMethod, setSelectedMethod] = React.useState<Dropdown>(Methods[0]);
-  const [selectedAggreagations, setSelectedAggreagations] = React.useState<Dropdown>(Aggreagations[0]);
+  const [selectedAggregations, setSelectedAggregations] = React.useState<Dropdown>(Aggreagations[0]);
   const [filterByValues, setFilterByValues] = React.useState<Dropdown[]>([]);
 
   const { spaces } = useFetchSpaces(baseUrl);
@@ -54,7 +54,7 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, onChange, onRunQuery 
     setTotalInstances(data.data.nodes.reduce((acc: number, node: any) => acc + node.chartIDs.length, 0));
   };
 
-  const IsGroupFunctionAvailable = React.useCallback(() => {
+  const isGroupFunctionAvailable = React.useCallback(() => {
     if (groupBy === 'instance' || selectedGroupBy?.value === 'instance') {
       return false;
     }
@@ -148,13 +148,13 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, onChange, onRunQuery 
     setSelectedContext({});
     setSelectedDimensions([]);
     setSelectedGroupBy(GroupByList[0]);
-    setSelectedFilter({ label: 'No filter', value: 'No filter' });
+    setSelectedFilter({});
     setSelectedFilterValue({});
     setSelectedMethod(Methods[0]);
-    setSelectedAggreagations(Aggreagations[0]);
+    setSelectedAggregations(Aggreagations[0]);
 
     fetchRooms(v.value || '');
-    onChange({ spaceId: v.value } as MyQuery);
+    onChange({ ...query, spaceId: v.value });
     onRunQuery();
   };
 
@@ -166,14 +166,14 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, onChange, onRunQuery 
     setSelectedContext({});
     setSelectedDimensions([]);
     setSelectedGroupBy(GroupByList[0]);
-    setSelectedFilter({ label: 'No filter', value: 'No filter' });
+    setSelectedFilter({});
     setSelectedFilterValue({});
     setSelectedMethod(Methods[0]);
-    setSelectedAggreagations(Aggreagations[0]);
+    setSelectedAggregations(Aggreagations[0]);
 
     fetchContexts(selectedSpace?.value || '', v.value || '');
     fetchNodes(selectedSpace?.value || '', v.value || '');
-    onChange({ spaceId: spaceId, roomId: v.value } as MyQuery);
+    onChange({ ...query, spaceId: spaceId, roomId: v.value });
     onRunQuery();
   };
 
@@ -183,14 +183,13 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, onChange, onRunQuery 
     // reset the rest of inputs
     setSelectedDimensions([]);
     setSelectedGroupBy(GroupByList[0]);
-    setSelectedFilter({ label: 'No filter', value: 'No filter' });
+    setSelectedFilter({});
     setSelectedFilterValue({});
     setSelectedMethod(Methods[0]);
-    setSelectedAggreagations(Aggreagations[0]);
+    setSelectedAggregations(Aggreagations[0]);
 
     fetchDimensions({ spaceId, roomId, contextId: v.value, nodeIDs: selectedNodes?.map((n: any) => n.value) || [] });
     onChange({ ...query, contextId: v.value });
-    onChange({ spaceId, roomId, contextId: v.value } as MyQuery);
     onRunQuery();
   };
 
@@ -200,14 +199,14 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, onChange, onRunQuery 
     // reset the rest of inputs
     setSelectedDimensions([]);
     setSelectedGroupBy(GroupByList[0]);
-    setSelectedFilter({ label: 'No filter', value: 'No filter' });
+    setSelectedFilter({});
     setSelectedFilterValue({});
     setSelectedMethod(Methods[0]);
-    setSelectedAggreagations(Aggreagations[0]);
+    setSelectedAggregations(Aggreagations[0]);
 
     fetchDimensions({ spaceId, roomId, contextId, nodeIDs: data });
     setSelectedNodes(data);
-    onChange({ spaceId, roomId, contextId, nodes: data } as MyQuery);
+    onChange({ ...query, spaceId, roomId, contextId, nodes: data } as MyQuery);
     onRunQuery();
   };
 
@@ -249,7 +248,7 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, onChange, onRunQuery 
   };
 
   const onAggreagationChange = (v: SelectableValue<string>) => {
-    setSelectedAggreagations(v);
+    setSelectedAggregations(v);
     onChange({ ...query, group: v.value });
     onRunQuery();
   };
@@ -336,7 +335,7 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, onChange, onRunQuery 
           labelWidth={10}
           inputEl={
             <Select
-              disabled={!IsGroupFunctionAvailable()}
+              disabled={!isGroupFunctionAvailable()}
               options={Methods}
               value={selectedMethod}
               onChange={onMethodChange}
@@ -352,7 +351,7 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, onChange, onRunQuery 
           inputEl={
             <Select
               options={Aggreagations}
-              value={selectedAggreagations}
+              value={selectedAggregations}
               onChange={onAggreagationChange}
               allowCustomValue
               isSearchable

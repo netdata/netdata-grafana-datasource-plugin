@@ -7,8 +7,10 @@ import {
   FieldType,
 } from '@grafana/data';
 import { useGetChartData } from 'shared/hooks/useGetChartData';
+import { Get } from 'shared/utils/request';
 import { MyQuery, MyDataSourceOptions } from './shared/types';
 import PubSub from 'pubsub-js';
+
 export class DataSource extends DataSourceApi<MyQuery, MyDataSourceOptions> {
   baseUrl: string;
 
@@ -23,7 +25,11 @@ export class DataSource extends DataSourceApi<MyQuery, MyDataSourceOptions> {
     const to = range!.to.valueOf();
 
     const promises = options.targets.map(
-      ({ spaceId, roomId, contextId, nodes, groupBy, method, refId, dimensions, filterBy, filterValue }) => {
+      ({ spaceId, roomId, contextId, nodes, groupBy, method, refId, dimensions, filterBy, filterValue, hide }) => {
+        if (hide) {
+          return null;
+        }
+
         if (!spaceId || !roomId || !contextId) {
           const frame = new MutableDataFrame({
             refId: refId,
@@ -76,14 +82,36 @@ export class DataSource extends DataSourceApi<MyQuery, MyDataSourceOptions> {
       }
     );
 
-    return Promise.all(promises).then((data) => ({ data }));
+    return Promise.all(promises.filter(Boolean)).then((data) => ({ data }));
   }
 
   async testDatasource() {
-    // Implement a health check for your data source.
-    return {
-      status: 'success',
-      message: 'Success',
-    };
+    const defaultErrorMessage = 'Cannot connect to API';
+
+    try {
+      const response = await Get({ path: '/v2/accounts/me', baseUrl: this.baseUrl });
+
+      if (response.status === 200 && response?.data?.id !== '00000000-0000-0000-0000-000000000000') {
+        return {
+          status: 'success',
+          message: 'Success',
+        };
+      } else {
+        return {
+          status: 'error',
+          message:
+            response.status === 401 || response?.data?.id !== '00000000-0000-0000-0000-000000000000'
+              ? 'Invalid token. Please validate the token defined on the datasource.'
+              : response.statusText
+              ? response.statusText
+              : defaultErrorMessage,
+        };
+      }
+    } catch (err) {
+      return {
+        status: 'error',
+        message: defaultErrorMessage,
+      };
+    }
   }
 }
