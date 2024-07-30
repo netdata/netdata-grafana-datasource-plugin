@@ -95,7 +95,7 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, range, onChange, onRu
       fetchNodes(spaceId || '', roomId);
       fetchContexts(spaceId || '', roomId, after, before);
     }
-  }, [roomId, rooms, fetchContexts, fetchNodes, spaceId]);
+  }, [roomId, rooms, fetchContexts, fetchNodes, spaceId, after, before]);
 
   React.useEffect(() => {
     // eslint-disable-line
