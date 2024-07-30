@@ -17,8 +17,13 @@ type Props = QueryEditorProps<DataSource, MyQuery, MyDataSourceOptions>;
 
 const { FormField } = LegacyForms;
 
-const QueryEditor: React.FC<Props> = ({ datasource, query, onChange, onRunQuery }) => {
+const QueryEditor: React.FC<Props> = ({ datasource, query, range, onChange, onRunQuery }) => {
   const { baseUrl } = datasource;
+  const from = range!.from.valueOf();
+  const to = range!.to.valueOf();
+  const after = Math.floor(from / 1000);
+  const before = Math.floor(to / 1000);
+
   const [selectedSpace, setSelectedSpace] = React.useState<Dropdown>();
   const [selectedRoom, setSelectedRoom] = React.useState<Dropdown>();
   const [selectedFilter, setSelectedFilter] = React.useState<Dropdown>();
@@ -88,7 +93,7 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, onChange, onRunQuery 
       const room = rooms.find((r) => r.value === roomId);
       setSelectedRoom({ label: room?.label, value: room?.value });
       fetchNodes(spaceId || '', roomId);
-      fetchContexts(spaceId || '', roomId);
+      fetchContexts(spaceId || '', roomId, after, before);
     }
   }, [roomId, rooms, fetchContexts, fetchNodes, spaceId]);
 
@@ -171,7 +176,7 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, onChange, onRunQuery 
     setSelectedMethod(Methods[0]);
     setSelectedAggregations(Aggreagations[0]);
 
-    fetchContexts(selectedSpace?.value || '', v.value || '');
+    fetchContexts(selectedSpace?.value || '', v.value || '', after, before);
     fetchNodes(selectedSpace?.value || '', v.value || '');
     onChange({ ...query, spaceId: spaceId, roomId: v.value });
     onRunQuery();
