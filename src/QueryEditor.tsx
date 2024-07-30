@@ -103,9 +103,10 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, range, onChange, onRu
       const filteredNodes: any[] = [];
       allNodes.forEach((element) => {
         const currentNode: any = nodes.find((n: any) => n.id === element);
+        console.log({ element, nodes, currentNode });
         filteredNodes.push({ label: currentNode?.name, value: currentNode?.id });
       });
-
+      console.log({ allNodes, nodes, filteredNodes });
       setSelectedNodes(filteredNodes);
     }
   }, [allNodes, nodes]); // eslint-disable-line
