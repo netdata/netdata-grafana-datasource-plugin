@@ -50,7 +50,7 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, range, onChange, onRu
   const { allDimensions, groupingByList, filters, units, fetchDimensions } = useFetchDimensions(baseUrl);
 
   const filterList = React.useMemo(() => Object.keys(filters).map((s) => ({ label: s, value: s })), [filters]);
-  const nodeList = React.useMemo(() => nodes?.map((c: any) => ({ label: c.nm, value: c.nd })), [nodes]);
+  const nodeList = React.useMemo(() => nodes?.map((c: any) => ({ label: c.name, value: c.id })), [nodes]);
 
   const { spaceId, roomId, nodes: allNodes, dimensions, groupBy, contextId, filterBy, filterValue } = query;
 
@@ -102,7 +102,7 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, range, onChange, onRu
     if (allNodes && nodes.length > 0) {
       const filteredNodes: any[] = [];
       allNodes.forEach((element) => {
-        const currentNode: any = nodes.find((n: any) => n.nd === element);
+        const currentNode: any = nodes.find((n: any) => n.id === element);
         filteredNodes.push({ label: currentNode?.name, value: currentNode?.id });
       });
 
@@ -116,7 +116,7 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, range, onChange, onRu
 
       if (allNodes && nodes.length > 0) {
         allNodes.forEach((element) => {
-          const currentNode: any = nodes.find((n: any) => n.nd === element);
+          const currentNode: any = nodes.find((n: any) => n.id === element);
           filteredNodes.push({ label: currentNode?.name, value: currentNode?.id });
         });
       }

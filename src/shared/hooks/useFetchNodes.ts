@@ -1,6 +1,14 @@
 import React from 'react';
 import { Post } from 'shared/utils/request';
 
+type Node = {
+  nd: string;
+  nm: string;
+  [key: string]: any;
+};
+
+const transformNodes = (nodes: Node[] = []) => nodes.map(({ nd, nm, ...rest }) => ({ id: nd, name: nm, ...rest }));
+
 export const getNodes = async (spaceId: string, roomId: string, baseUrl: string) => {
   const response = await Post({
     path: `/v3/spaces/${spaceId}/rooms/${roomId}/nodes`,
@@ -11,6 +19,7 @@ export const getNodes = async (spaceId: string, roomId: string, baseUrl: string)
       },
     },
   });
+
   return response?.data?.nodes;
 };
 
@@ -35,7 +44,7 @@ export const useFetchNodes = (baseUrl: string) => {
 
   return {
     isError,
-    nodes,
+    nodes: transformNodes(nodes),
     fetchNodes,
   };
 };
