@@ -1,9 +1,11 @@
 import React from 'react';
-import { Get } from 'shared/utils/request';
+import { Post } from 'shared/utils/request';
 
 export const getNodes = async (spaceId: string, roomId: string, baseUrl: string) => {
-  const response = await Get({ path: `/v2/spaces/${spaceId}/rooms/${roomId}/nodes`, baseUrl });
-  return response?.data;
+  const response = await Post({ path: `/v3/spaces/${spaceId}/rooms/${roomId}/nodes`, baseUrl, data: { scope: {
+    nodes: [],
+  } } });
+  return response?.nodes;
 };
 
 export const useFetchNodes = (baseUrl: string) => {
