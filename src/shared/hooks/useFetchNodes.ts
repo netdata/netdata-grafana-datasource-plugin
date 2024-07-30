@@ -11,7 +11,7 @@ export const getNodes = async (spaceId: string, roomId: string, baseUrl: string)
       },
     },
   });
-  return response?.nodes;
+  return response?.data?.nodes;
 };
 
 export const useFetchNodes = (baseUrl: string) => {
