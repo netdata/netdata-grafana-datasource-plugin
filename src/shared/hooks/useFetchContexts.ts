@@ -3,8 +3,9 @@ import React from 'react';
 import { Get } from 'shared/utils/request';
 
 export const getContexts = async (spaceId: string, roomId: string, baseUrl: string) => {
-  const response = await Get({ path: `/v2/spaces/${spaceId}/rooms/${roomId}/contexts`, baseUrl });
-  return response?.data?.results as string[];
+  const response = await Get({ path: `/v3/spaces/${spaceId}/rooms/${roomId}/contexts`, baseUrl });
+  const { contexts = {} } = response || {}
+  return Object.keys(contexts) as string[];
 };
 
 export const useFetchContexts = (baseUrl: string) => {
