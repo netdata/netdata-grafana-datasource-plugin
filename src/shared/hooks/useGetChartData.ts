@@ -56,7 +56,7 @@ export const useGetChartData = async ({
   }
 
   return await Post({
-    path: `/v2/spaces/${spaceId}/rooms/${roomId}/data`,
+    path: `/v3/spaces/${spaceId}/rooms/${roomId}/data`,
     baseUrl,
     data: {
       filter: {
