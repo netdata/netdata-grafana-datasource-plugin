@@ -4,7 +4,7 @@ import { Get } from 'shared/utils/request';
 
 export const getContexts = async (spaceId: string, roomId: string, baseUrl: string) => {
   const response = await Get({ path: `/v3/spaces/${spaceId}/rooms/${roomId}/contexts`, baseUrl });
-  const { contexts = {} } = response || {};
+  const { contexts = {} } = response?.data || {};
   return Object.keys(contexts) as string[];
 };
 
