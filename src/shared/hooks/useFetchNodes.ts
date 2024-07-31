@@ -3,11 +3,13 @@ import { Post } from 'shared/utils/request';
 
 type Node = {
   nd: string;
+  mg: string;
   nm: string;
   [key: string]: any;
 };
 
-const transformNodes = (nodes: Node[] = []) => nodes.map(({ nd, nm, ...rest }) => ({ id: nd, name: nm, ...rest }));
+const transformNodes = (nodes: Node[] = []) =>
+  nodes.map(({ nd, mg, nm, ...rest }) => ({ id: nd || mg, name: nm, ...rest }));
 
 export const getNodes = async (spaceId: string, roomId: string, baseUrl: string) => {
   const response = await Post({
