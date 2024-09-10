@@ -71,7 +71,7 @@ export class DataSource extends DataSourceApi<MyQuery, MyDataSourceOptions> {
 
             response.data.result.data.forEach((point: any) => {
               const [timestamp, ...rest] = point;
-              frame.appendRow([timestamp, ...rest.map((r: Array<any>) => r[0])]);
+              frame.appendRow([timestamp, ...rest.map((r: any[]) => r[0])]);
             });
 
             return frame;
