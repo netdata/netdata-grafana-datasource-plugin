@@ -55,8 +55,11 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, range, onChange, onRu
   const { spaceId, roomId, nodes: allNodes, dimensions, groupBy, contextId, filterBy, filterValue } = query;
 
   const mySubscriber = (msg: any, data: any) => {
-    setTotalNodes(data.data.summary.nodes.length);
-    setTotalInstances(data.data.summary.instances.length);
+    const { summary, view } = data?.data || {};
+    const { nodes = [], instances = [], labels = [] } = summary || {};
+    //const { dimensions, units } = view || {};
+    setTotalNodes(nodes.length);
+    setTotalInstances(instances.length);
   };
 
   const isGroupFunctionAvailable = React.useCallback(() => {
