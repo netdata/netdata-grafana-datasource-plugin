@@ -31,7 +31,6 @@ export const useGetChartData = async ({
   dimensions = [],
   from,
   to,
-  ...rest
 }: UseGetChartDataType) => {
   let metrics = [];
 
