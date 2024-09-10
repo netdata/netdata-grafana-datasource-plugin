@@ -56,7 +56,6 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, range, onChange, onRu
 
   const mySubscriber = (msg: any, data: any) => {
     setTotalNodes(data.data.summary.nodes.length);
-    //setTotalInstances(data.data.summary.nodes.reduce((acc: number, node: any) => acc + node.chartIDs.length, 0));
     setTotalInstances(data.data.summary.instances.length);
   };
 
