@@ -33,22 +33,6 @@ export const useGetChartData = async ({
   to,
   ...rest
 }: UseGetChartDataType) => {
-  console.log({
-    baseUrl,
-    roomId,
-    nodes,
-    spaceId,
-    contextId,
-    filterBy,
-    filterValue,
-    groupBy,
-    method,
-    group,
-    dimensions,
-    from,
-    to,
-    ...rest,
-  });
   let metrics = [];
 
   switch (groupBy) {
@@ -65,10 +49,6 @@ export const useGetChartData = async ({
           aggregation: method,
         },
       ];
-      // metrics = [
-      //   { method: 'sum', groupBy: ['chart', 'node'] },
-      //   { method, groupBy: ['node'] },
-      // ];
       break;
     case 'dimension':
       metrics = [
@@ -78,7 +58,6 @@ export const useGetChartData = async ({
           aggregation: method,
         },
       ];
-      // metrics = [{ method, groupBy: ['dimension'] }];
       break;
     case 'instance':
       metrics = [
@@ -88,7 +67,6 @@ export const useGetChartData = async ({
           aggregation: 'sum',
         },
       ];
-      // metrics = [{ method: 'sum', groupBy: ['chart', 'node'] }];
       break;
     default:
       metrics = [
@@ -103,10 +81,6 @@ export const useGetChartData = async ({
           aggregation: 'avg',
         },
       ];
-      // metrics = [
-      //   { method: 'sum', groupBy: ['chart', `label=${groupBy}`] },
-      //   { method: 'avg', groupBy: [`label=${groupBy}`] },
-      // ];
       break;
   }
 
@@ -119,6 +93,7 @@ export const useGetChartData = async ({
       scope: {
         contexts: [contextId],
         nodes,
+        dimensions,
       },
       selectors: {
         contexts: ['*'],
@@ -134,26 +109,4 @@ export const useGetChartData = async ({
       window: { after: from, before: to, points: 269 },
     },
   });
-
-  // return await Post({
-  //   path: `/v3/spaces/${spaceId}/rooms/${roomId}/data`,
-  //   baseUrl,
-  //   data: {
-  //     filter: {
-  //       nodeIDs: nodes,
-  //       context: contextId,
-  //       dimensions,
-  //       ...(filterBy && filterValue ? { labels: { [filterBy]: [filterValue] } } : {}),
-  //     },
-  //     aggregations,
-  //     agent_options: ['jsonwrap', 'flip', 'ms'],
-  //     points: 335,
-  //     format: 'json',
-  //     group,
-  //     gtime: 0,
-  //     after: from,
-  //     before: to,
-  //     with_metadata: true,
-  //   },
-  // });
 };
