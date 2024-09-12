@@ -63,9 +63,7 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, range, onChange, onRu
     const { nodes = [], instances = [], labels = [] } = summary || {};
     const { dimensions, units } = view || {};
     setFilters(getFilters(labels));
-    const options = getGroupingByList(labels);
-    console.log({ labels, options });
-    setGroupingByList(options);
+    setGroupingByList(getGroupingByList(labels));
     setAllDimension(getDimensions(dimensions));
     setUnits(units);
     setTotalNodes(nodes.length);
