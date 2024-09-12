@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Input, LegacyForms, Select } from '@grafana/ui';
 import { QueryEditorProps, SelectableValue } from '@grafana/data';
 import { DataSource } from './datasource';
@@ -11,6 +11,7 @@ import { useFetchNodes } from 'shared/hooks/useFetchNodes';
 import { Aggreagations, GroupByList, Methods } from 'shared/constants';
 import { useFetchDimensions } from 'shared/hooks/useFetchDimensions';
 import { Dropdown } from 'shared/types/dropdown.interface';
+import { getDimensions, getFilters, getGroupingByList, defaultFilter } from 'shared/utils/transformations';
 import PubSub from 'pubsub-js';
 
 type Props = QueryEditorProps<DataSource, MyQuery, MyDataSourceOptions>;
@@ -47,7 +48,11 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, range, onChange, onRu
   const { rooms, fetchRooms } = useFetchRooms(baseUrl);
   const { nodes, fetchNodes } = useFetchNodes(baseUrl);
   const { contexts, fetchContexts } = useFetchContexts(baseUrl);
-  const { allDimensions, groupingByList, filters, units, fetchDimensions } = useFetchDimensions(baseUrl);
+  //const { fetchDimensions } = useFetchDimensions(baseUrl);
+  const [allDimensions, setAllDimension] = useState([]);
+  const [units, setUnits] = useState('');
+  const [filters, setFilters] = useState<any>(defaultFilter);
+  const [groupingByList, setGroupingByList] = useState<Dropdown[]>(GroupByList);
 
   const filterList = React.useMemo(() => Object.keys(filters).map((s) => ({ label: s, value: s })), [filters]);
   const nodeList = React.useMemo(() => nodes?.map((c: any) => ({ label: c.name, value: c.id })), [nodes]);
@@ -57,7 +62,11 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, range, onChange, onRu
   const mySubscriber = (msg: any, data: any) => {
     const { summary, view } = data?.data || {};
     const { nodes = [], instances = [], labels = [] } = summary || {};
-    //const { dimensions, units } = view || {};
+    const { dimensions, units } = view || {};
+    setFilters(getFilters(labels));
+    setGroupingByList(getGroupingByList(labels));
+    setAllDimension(getDimensions(dimensions));
+    setUnits(units);
     setTotalNodes(nodes.length);
     setTotalInstances(instances.length);
   };
@@ -124,7 +133,7 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, range, onChange, onRu
         });
       }
 
-      fetchDimensions({ spaceId, roomId, contextId, nodeIDs: filteredNodes.map((n: any) => n.value) });
+      //fetchDimensions({ spaceId, roomId, contextId, nodeIDs: filteredNodes.map((n: any) => n.value) });
     }
   }, [contextId]); // eslint-disable-line
 
@@ -196,7 +205,7 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, range, onChange, onRu
     setSelectedMethod(Methods[0]);
     setSelectedAggregations(Aggreagations[0]);
 
-    fetchDimensions({ spaceId, roomId, contextId: v.value, nodeIDs: selectedNodes?.map((n: any) => n.value) || [] });
+    //fetchDimensions({ spaceId, roomId, contextId: v.value, nodeIDs: selectedNodes?.map((n: any) => n.value) || [] });
     onChange({ ...query, contextId: v.value });
     onRunQuery();
   };
@@ -212,7 +221,7 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, range, onChange, onRu
     setSelectedMethod(Methods[0]);
     setSelectedAggregations(Aggreagations[0]);
 
-    fetchDimensions({ spaceId, roomId, contextId, nodeIDs: data });
+    //fetchDimensions({ spaceId, roomId, contextId, nodeIDs: data });
     setSelectedNodes(data);
     onChange({ ...query, spaceId, roomId, contextId, nodes: data } as MyQuery);
     onRunQuery();
@@ -239,7 +248,7 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, range, onChange, onRu
       onChange({ ...query, filterBy: undefined, filterValue: undefined });
       onRunQuery();
     } else {
-      setFilterByValues(filters[v?.value || ''].map((v) => ({ label: v, value: v })));
+      setFilterByValues(filters[v?.value || ''].map((v: string) => ({ label: v, value: v })));
     }
   };
 
