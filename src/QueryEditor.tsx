@@ -47,7 +47,6 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, range, onChange, onRu
   const { rooms, fetchRooms } = useFetchRooms(baseUrl);
   const { nodes, fetchNodes } = useFetchNodes(baseUrl);
   const { contexts, fetchContexts } = useFetchContexts(baseUrl);
-  //const { fetchDimensions } = useFetchDimensions(baseUrl);
   const [allDimensions, setAllDimension] = useState([]);
   const [units, setUnits] = useState('');
   const [filters, setFilters] = useState<any>(defaultFilter);
@@ -131,8 +130,6 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, range, onChange, onRu
           filteredNodes.push({ label: currentNode?.name, value: currentNode?.id });
         });
       }
-
-      //fetchDimensions({ spaceId, roomId, contextId, nodeIDs: filteredNodes.map((n: any) => n.value) });
     }
   }, [contextId]); // eslint-disable-line
 
@@ -204,7 +201,6 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, range, onChange, onRu
     setSelectedMethod(Methods[0]);
     setSelectedAggregations(Aggreagations[0]);
 
-    //fetchDimensions({ spaceId, roomId, contextId: v.value, nodeIDs: selectedNodes?.map((n: any) => n.value) || [] });
     onChange({ ...query, contextId: v.value });
     onRunQuery();
   };
@@ -220,7 +216,6 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, range, onChange, onRu
     setSelectedMethod(Methods[0]);
     setSelectedAggregations(Aggreagations[0]);
 
-    //fetchDimensions({ spaceId, roomId, contextId, nodeIDs: data });
     setSelectedNodes(data);
     onChange({ ...query, spaceId, roomId, contextId, nodes: data } as MyQuery);
     onRunQuery();
