@@ -9,7 +9,6 @@ import { useFetchRooms } from 'shared/hooks/useFetchRooms';
 import { useFetchContexts } from 'shared/hooks/useFetchContexts';
 import { useFetchNodes } from 'shared/hooks/useFetchNodes';
 import { Aggreagations, GroupByList, Methods } from 'shared/constants';
-import { useFetchDimensions } from 'shared/hooks/useFetchDimensions';
 import { Dropdown } from 'shared/types/dropdown.interface';
 import { getDimensions, getFilters, getGroupingByList, defaultFilter } from 'shared/utils/transformations';
 import PubSub from 'pubsub-js';
