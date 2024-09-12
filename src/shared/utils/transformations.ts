@@ -19,7 +19,7 @@ export const getFilters = (labels: any[]) => {
   return {
     ...defaultFilter,
     ...labels.reduce((acc: any, label: any) => {
-      acc[label.id] = (acc.vl || []).map((value: any) => value.id);
+      acc[label.id] = (label.vl || []).map((value: any) => value.id);
       return acc;
     }, {}),
   };
