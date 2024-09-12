@@ -17,16 +17,16 @@ on:
         default: 'false'
         type: choice
         options:
-        - 'true'
-        - 'false'
+          - 'true'
+          - 'false'
       ENV:
         required: true
         default: 'testing'
         type: choice
         options:
-        - testing
-        - staging
-        - production
+          - testing
+          - staging
+          - production
 
 env:
   BRANCH: ${{ github.event.inputs.BRANCH || github.ref }}
@@ -44,7 +44,7 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.1.2
         with:
-          node-version: "14.x"
+          node-version: '14.x'
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
@@ -84,7 +84,7 @@ jobs:
           zip "netdata-datasource-${{ steps.build_environment.outputs.BUILD_VERSION }}.zip" netdata-datasource -r
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: netdata-datasource-${{ steps.build_environment.outputs.BUILD_VERSION }}.zip
           path: ./netdata-datasource-${{ steps.build_environment.outputs.BUILD_VERSION }}.zip
