@@ -25,6 +25,10 @@ export const getFilters = (labels: any[]) => {
   };
 };
 
-export const getGroupingByList = (labels: any) => {
+export const getGroupingByList = (labels: any[]) => {
+  if (!labels?.length) {
+    return GroupByList;
+  }
+
   return [...GroupByList, ...labels.map((label: any) => ({ value: label.id, label: label.id }))];
 };
