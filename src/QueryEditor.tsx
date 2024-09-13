@@ -236,9 +236,9 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, range, onChange, onRu
 
   const onFilterByChange = (v: SelectableValue<string>) => {
     setSelectedFilter(v);
+    setSelectedFilterValue({});
 
     if (v.value === 'No filter') {
-      setSelectedFilterValue({});
       onChange({ ...query, filterBy: undefined, filterValue: undefined });
       onRunQuery();
     } else {
