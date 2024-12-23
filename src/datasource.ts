@@ -61,9 +61,11 @@ export class DataSource extends DataSourceApi<MyQuery, MyDataSourceOptions> {
             const frame = new MutableDataFrame({
               refId,
               fields: response.data.result.labels.map((id: string, i: number) => {
-                const node = response.data.nodes.find((n: any) => n.id === id);
+                const dimIndex =
+                  i === 0 ? -1 : response.data.view.dimensions.ids.findIndex((dim: any) => dim.id === id);
+
                 return {
-                  name: node?.name || id,
+                  name: dimIndex !== -1 ? response.data.view.dimensions.names[dimIndex] || id : id,
                   type: i === 0 ? FieldType.time : FieldType.number,
                 };
               }),
@@ -103,8 +105,8 @@ export class DataSource extends DataSourceApi<MyQuery, MyDataSourceOptions> {
             response.status === 401 || response?.data?.id !== '00000000-0000-0000-0000-000000000000'
               ? 'Invalid token. Please validate the token defined on the datasource.'
               : response.statusText
-              ? response.statusText
-              : defaultErrorMessage,
+                ? response.statusText
+                : defaultErrorMessage,
         };
       }
     } catch (err) {
