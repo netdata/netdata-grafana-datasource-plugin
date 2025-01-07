@@ -32,48 +32,80 @@ export const useGetChartData = async ({
   from,
   to,
 }: UseGetChartDataType) => {
-  let aggregations = [];
+  let metrics = [];
 
   switch (groupBy) {
     case 'node':
-      aggregations = [
-        { method: 'sum', groupBy: ['chart', 'node'] },
-        { method, groupBy: ['node'] },
+      metrics = [
+        {
+          group_by: ['chart', 'node'],
+          group_by_label: [],
+          aggregation: 'sum',
+        },
+        {
+          group_by: ['node'],
+          group_by_label: [],
+          aggregation: method,
+        },
       ];
       break;
     case 'dimension':
-      aggregations = [{ method, groupBy: ['dimension'] }];
+      metrics = [
+        {
+          group_by: ['dimension'],
+          group_by_label: [],
+          aggregation: method,
+        },
+      ];
       break;
     case 'instance':
-      aggregations = [{ method: 'sum', groupBy: ['chart', 'node'] }];
+      metrics = [
+        {
+          group_by: ['chart', 'node'],
+          group_by_label: [],
+          aggregation: 'sum',
+        },
+      ];
       break;
     default:
-      aggregations = [
-        { method: 'sum', groupBy: ['chart', `label=${groupBy}`] },
-        { method: 'avg', groupBy: [`label=${groupBy}`] },
+      metrics = [
+        {
+          group_by: ['chart'],
+          group_by_label: groupBy,
+          aggregation: 'sum',
+        },
+        {
+          group_by: [],
+          group_by_label: groupBy,
+          aggregation: 'avg',
+        },
       ];
       break;
   }
 
   return await Post({
-    path: `/v2/spaces/${spaceId}/rooms/${roomId}/data`,
+    path: `/v3/spaces/${spaceId}/rooms/${roomId}/data`,
     baseUrl,
     data: {
-      filter: {
-        nodeIDs: nodes,
-        context: contextId,
+      format: 'json2',
+      options: ['jsonwrap', 'flip', 'ms'],
+      scope: {
+        contexts: [contextId],
+        nodes,
         dimensions,
-        ...(filterBy && filterValue ? { labels: { [filterBy]: [filterValue] } } : {}),
       },
-      aggregations,
-      agent_options: ['jsonwrap', 'flip', 'ms'],
-      points: 335,
-      format: 'json',
-      group,
-      gtime: 0,
-      after: from,
-      before: to,
-      with_metadata: true,
+      selectors: {
+        contexts: ['*'],
+        nodes: ['*'],
+        instances: ['*'],
+        dimensions: ['*'],
+        labels: ['*'],
+      },
+      aggregations: {
+        metrics,
+        time: { time_group: group, time_resampling: 0 },
+      },
+      window: { after: from, before: to, points: 269 },
     },
   });
 };

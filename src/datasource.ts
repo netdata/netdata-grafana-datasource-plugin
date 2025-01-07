@@ -61,7 +61,7 @@ export class DataSource extends DataSourceApi<MyQuery, MyDataSourceOptions> {
             const frame = new MutableDataFrame({
               refId,
               fields: response.data.result.labels.map((id: string, i: number) => {
-                const node = response.data.nodes.find((n: any) => n.id === id);
+                const node = response.data.summary.nodes.find((n: any) => n.nd === id);
                 return {
                   name: node?.name || id,
                   type: i === 0 ? FieldType.time : FieldType.number,
@@ -69,8 +69,11 @@ export class DataSource extends DataSourceApi<MyQuery, MyDataSourceOptions> {
               }),
             });
 
+            const valueIndex = response.data.result.point.value;
+
             response.data.result.data.forEach((point: any) => {
-              frame.appendRow([...point]);
+              const [timestamp, ...rest] = point;
+              frame.appendRow([timestamp, ...rest.map((r: any[]) => r[valueIndex])]);
             });
 
             return frame;
