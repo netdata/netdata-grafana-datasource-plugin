@@ -61,7 +61,7 @@ export class DataSource extends DataSourceApi<MyQuery, MyDataSourceOptions> {
             const frame = new MutableDataFrame({
               refId,
               fields: response.data.result.labels.map((id: string, i: number) => {
-                const node = response.data.summary.nodes.find((n: any) => n.nd === id);
+                const node = response.data.summary.nodes.find((n: any) => n.mg === id);
                 return {
                   name: node?.nm || id,
                   type: i === 0 ? FieldType.time : FieldType.number,
