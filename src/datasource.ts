@@ -63,7 +63,7 @@ export class DataSource extends DataSourceApi<MyQuery, MyDataSourceOptions> {
               fields: response.data.result.labels.map((id: string, i: number) => {
                 const node = response.data.summary.nodes.find((n: any) => n.nd === id);
                 return {
-                  name: node?.name || id,
+                  name: node?.nm || id,
                   type: i === 0 ? FieldType.time : FieldType.number,
                 };
               }),
