@@ -47,7 +47,7 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, range, onChange, onRu
   const { rooms, fetchRooms } = useFetchRooms(baseUrl);
   const { nodes, fetchNodes } = useFetchNodes(baseUrl);
   const { contexts, fetchContexts } = useFetchContexts(baseUrl);
-  const [allDimensions, setAllDimension] = useState([]);
+  const [allDimensions, setAllDimensions] = useState([]);
   const [units, setUnits] = useState('');
   const [filters, setFilters] = useState<any>(defaultFilter);
   const [groupingByList, setGroupingByList] = useState<Dropdown[]>(GroupByList);
@@ -63,7 +63,7 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, range, onChange, onRu
     const { dimensions, units } = view || {};
     setFilters(getFilters(labels));
     setGroupingByList(getGroupingByList(labels));
-    setAllDimension(getDimensions(dimensions));
+    setAllDimensions(getDimensions(dimensions));
     setUnits(units);
     setTotalNodes(nodes.length);
     setTotalInstances(instances.length);
