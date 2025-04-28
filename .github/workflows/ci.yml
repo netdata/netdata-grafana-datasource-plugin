@@ -19,19 +19,10 @@ on:
         options:
           - 'true'
           - 'false'
-      ENV:
-        required: true
-        default: 'testing'
-        type: choice
-        options:
-          - testing
-          - staging
-          - production
 
 env:
   BRANCH: ${{ github.event.inputs.BRANCH || github.ref }}
   DEPLOY: ${{ github.event.inputs.DEPLOY || 'false' }}
-  ENV: ${{ github.event.inputs.ENV  || 'testing' }}
 
 jobs:
   build:
@@ -96,35 +87,13 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Setup deploy environment
-        id: deploy_environment
-        run: |
-          case $GITHUB_EVENT_NAME in
-            workflow_dispatch)
-              echo "::set-output name=ENV::${{ env.ENV }}"
-              echo "::set-output name=DEPLOY::${{ env.DEPLOY }}"
-              ;;
-            pull_request)
-              echo "::set-output name=ENV::staging"
-              echo "::set-output name=DEPLOY::false"
-              ;;
-            push)
-              echo "::set-output name=ENV::staging"
-              echo "::set-output name=DEPLOY::true"
-              ;;
-            *)
-              echo "::set-output name=ENV::staging"
-              echo "::set-output name=DEPLOY::false"
-              ;;
-          esac
-
       - name: Update Netdata Infra
-        if: ${{ steps.deploy_environment.outputs.DEPLOY == 'true' }}
+        if: github.event_name == 'workflow_dispatch'
         uses: benc-uk/workflow-dispatch@v1
         with:
           token: ${{ secrets.NETDATABOT_GITHUB_TOKEN }}
           repo: ${{ secrets.NETDATA_INFRA_REPO }}
           workflow: Netdata Grafana Plugin Deploy
           ref: master
-          inputs: '{"artifact_name": "${{ needs.build.outputs.artifact_name }}", "env": "${{ steps.deploy_environment.outputs.ENV }}", "workflow_run_id": "${{ github.run_id }}"}'
+          inputs: '{"artifact_name": "${{ needs.build.outputs.artifact_name }}", "env": "testing", "workflow_run_id": "${{ github.run_id }}"}'
         continue-on-error: true
