@@ -1,9 +1,28 @@
 import React from 'react';
-import { Get } from 'shared/utils/request';
+import { Post } from 'shared/utils/request';
+
+type Node = {
+  nd: string;
+  mg: string;
+  nm: string;
+  [key: string]: any;
+};
+
+const transformNodes = (nodes: Node[] = []) =>
+  nodes.map(({ nd, mg, nm, ...rest }) => ({ id: nd || mg, name: nm, ...rest }));
 
 export const getNodes = async (spaceId: string, roomId: string, baseUrl: string) => {
-  const response = await Get({ path: `/v2/spaces/${spaceId}/rooms/${roomId}/nodes`, baseUrl });
-  return response?.data;
+  const response = await Post({
+    path: `/v3/spaces/${spaceId}/rooms/${roomId}/nodes`,
+    baseUrl,
+    data: {
+      scope: {
+        nodes: [],
+      },
+    },
+  });
+
+  return response?.data?.nodes;
 };
 
 export const useFetchNodes = (baseUrl: string) => {
@@ -27,7 +46,7 @@ export const useFetchNodes = (baseUrl: string) => {
 
   return {
     isError,
-    nodes,
+    nodes: transformNodes(nodes),
     fetchNodes,
   };
 };

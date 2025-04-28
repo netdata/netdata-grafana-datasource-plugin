@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     tags:
-      - "v*.*.*"
+      - 'v*.*.*'
 
 jobs:
   release:
@@ -17,7 +17,7 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.1.2
         with:
-          node-version: "14.x"
+          node-version: '14.x'
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
@@ -64,7 +64,7 @@ jobs:
           export GRAFANA_PLUGIN_TYPE=$(cat dist/plugin.json | jq -r .type)
           export GRAFANA_PLUGIN_ARTIFACT=${GRAFANA_PLUGIN_ID}-${GRAFANA_PLUGIN_VERSION}.zip
           export GRAFANA_PLUGIN_ARTIFACT_CHECKSUM=${GRAFANA_PLUGIN_ARTIFACT}.md5
-          
+
           echo "plugin-id=${GRAFANA_PLUGIN_ID}" >> $GITHUB_OUTPUT
           echo "plugin-version=${GRAFANA_PLUGIN_VERSION}" >> $GITHUB_OUTPUT
           echo "plugin-type=${GRAFANA_PLUGIN_TYPE}" >> $GITHUB_OUTPUT
@@ -91,7 +91,7 @@ jobs:
           echo "checksum=$(cat './${{ steps.metadata.outputs.archive-checksum }}' | cut -d' ' -f1)" >> $GITHUB_OUTPUT
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.metadata.outputs.archive }}
           path: ./${{ steps.metadata.outputs.archive }}
