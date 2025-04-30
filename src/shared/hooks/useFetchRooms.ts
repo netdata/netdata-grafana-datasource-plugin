@@ -19,7 +19,6 @@ export const useFetchRooms = (baseUrl: string) => {
         const result = await getRooms(spaceId, baseUrl);
         setRooms(result?.map((r: any) => ({ label: r.name, value: r.id })));
       } catch (error) {
-        console.log('ERROR (useFetchRooms): ', error);
         setIsError(true);
       }
     },

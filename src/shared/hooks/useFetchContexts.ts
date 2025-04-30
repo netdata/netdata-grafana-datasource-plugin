@@ -38,7 +38,6 @@ export const useFetchContexts = (baseUrl: string) => {
         setContexts(result.map((c) => ({ label: c, value: c })));
       } catch (error) {
         setIsError(true);
-        console.log('ERROR (useFetchContexts): ', error);
       }
     },
     [baseUrl]

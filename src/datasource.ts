@@ -78,8 +78,7 @@ export class DataSource extends DataSourceApi<MyQuery, MyDataSourceOptions> {
 
             return frame;
           })
-          .catch((error) => {
-            console.log('ERROR (useGetChartData): ', error);
+          .catch(() => {
             return [];
           });
       }
