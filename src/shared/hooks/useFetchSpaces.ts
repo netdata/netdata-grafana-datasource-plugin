@@ -27,7 +27,6 @@ export const useFetchSpaces = (baseUrl: string) => {
 
       fetchData();
     } catch (error) {
-      console.log('ERROR (useFetchSpaces): ', error);
       setIsError(true);
     }
   }, [baseUrl]);

@@ -37,7 +37,6 @@ export const useFetchNodes = (baseUrl: string) => {
         const result = await getNodes(spaceId, roomId, baseUrl);
         setNodes(result);
       } catch (error) {
-        console.log('ERROR (useFetchNodes): ', error);
         setIsError(true);
       }
     },
