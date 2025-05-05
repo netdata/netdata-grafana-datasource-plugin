@@ -42,7 +42,6 @@ export const useFetchDimensions = (baseUrl: string) => {
 
       setGroupingByList(groupByData);
     } catch (error) {
-      console.log('ERROR (useFetchDimensions): ', error);
       setIsError(true);
     }
   };
