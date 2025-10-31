@@ -83,7 +83,9 @@ export const useGetChartData = async ({
       break;
   }
 
-  const labels = filterBy && filterValue ? [`${filterBy}:${filterValue}`] : ['*'];
+  const defaultScopeValue = [];
+  const defaultSelectorValue = ['*'];
+  const labels = filterBy && filterValue ? [`${filterBy}:${filterValue}`] : null;
 
   return await Post({
     path: `/v3/spaces/${spaceId}/rooms/${roomId}/data`,
@@ -95,13 +97,14 @@ export const useGetChartData = async ({
         contexts: [contextId],
         nodes,
         dimensions,
+        labels: labels : defaultScopeValue,
       },
       selectors: {
         contexts: ['*'],
         nodes: ['*'],
         instances: ['*'],
         dimensions: ['*'],
-        labels,
+        labels: labels || defaultSelectorValue,
       },
       aggregations: {
         metrics,
