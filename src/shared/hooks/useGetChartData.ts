@@ -97,7 +97,7 @@ export const useGetChartData = async ({
         contexts: [contextId],
         nodes,
         dimensions,
-        labels: labels : defaultScopeValue,
+        labels: labels || defaultScopeValue,
       },
       selectors: {
         contexts: ['*'],
