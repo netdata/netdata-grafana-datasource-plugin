@@ -12,17 +12,9 @@ on:
       BRANCH:
         required: true
         default: 'master'
-      DEPLOY:
-        required: true
-        default: 'false'
-        type: choice
-        options:
-          - 'true'
-          - 'false'
 
 env:
   BRANCH: ${{ github.event.inputs.BRANCH || github.ref }}
-  DEPLOY: ${{ github.event.inputs.DEPLOY || 'false' }}
 
 jobs:
   build:
