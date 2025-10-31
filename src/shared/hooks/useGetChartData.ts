@@ -103,7 +103,7 @@ export const useGetChartData = async ({
         contexts: ['*'],
         nodes: ['*'],
         instances: ['*'],
-        dimensions: ['*'],
+        dimensions: dimensions.length ? dimensions : defaultSelectorValue,
         labels: labels || defaultSelectorValue,
       },
       aggregations: {
