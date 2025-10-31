@@ -83,6 +83,8 @@ export const useGetChartData = async ({
       break;
   }
 
+  const labels = filterBy && filterValue ? [`${filterBy}:${filterValue}`] : ['*'];
+
   return await Post({
     path: `/v3/spaces/${spaceId}/rooms/${roomId}/data`,
     baseUrl,
@@ -99,7 +101,7 @@ export const useGetChartData = async ({
         nodes: ['*'],
         instances: ['*'],
         dimensions: ['*'],
-        labels: ['*'],
+        labels,
       },
       aggregations: {
         metrics,
