@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Input, LegacyForms, Select } from '@grafana/ui';
+import { Input, LegacyForms, Select, useStyles2 } from '@grafana/ui';
 import { QueryEditorProps, SelectableValue } from '@grafana/data';
+import { css } from '@emotion/css';
 import { DataSource } from './datasource';
 import { MyDataSourceOptions, MyQuery } from './shared/types';
 import { useFetchSpaces } from 'shared/hooks/useFetchSpaces';
-import './styles.css';
 import { useFetchRooms } from 'shared/hooks/useFetchRooms';
 import { useFetchContexts } from 'shared/hooks/useFetchContexts';
 import { useFetchNodes } from 'shared/hooks/useFetchNodes';
@@ -17,7 +17,24 @@ type Props = QueryEditorProps<DataSource, MyQuery, MyDataSourceOptions>;
 
 const { FormField } = LegacyForms;
 
+const getStyles = () => ({
+  mt: css`
+    margin-top: 1em;
+  `,
+  flex: css`
+    display: flex;
+    justify-content: space-between;
+    & > * {
+      flex: 1;
+    }
+    & .gf-form-input {
+      width: 100% !important;
+    }
+  `,
+});
+
 const QueryEditor: React.FC<Props> = ({ datasource, query, range, onChange, onRunQuery }) => {
+  const styles = useStyles2(getStyles);
   const { baseUrl } = datasource;
   const from = range!.from.valueOf();
   const to = range!.to.valueOf();
@@ -266,7 +283,7 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, range, onChange, onRu
 
   return (
     <>
-      <div className="flex mt">
+      <div className={`${styles.flex} ${styles.mt}`}>
         <FormField
           label="Space*"
           inputEl={
@@ -282,7 +299,7 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, range, onChange, onRu
         />
       </div>
 
-      <div className="mt">
+      <div className={styles.mt}>
         <FormField
           label="Nodes"
           tooltip="No selected Nodes means 'All Nodes' from the Room"
@@ -298,7 +315,7 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, range, onChange, onRu
           }
         />
       </div>
-      <div className="flex mt">
+      <div className={`${styles.flex} ${styles.mt}`}>
         <FormField
           label="Context*"
           inputEl={
@@ -327,7 +344,7 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, range, onChange, onRu
         />
       </div>
 
-      <div className="flex mt">
+      <div className={`${styles.flex} ${styles.mt}`}>
         <FormField
           label="Grouping by*"
           inputEl={
@@ -371,7 +388,7 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, range, onChange, onRu
         />
       </div>
 
-      <div className="flex mt">
+      <div className={`${styles.flex} ${styles.mt}`}>
         <FormField
           label="Filter by"
           inputEl={
@@ -399,7 +416,7 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, range, onChange, onRu
         />
       </div>
 
-      <div className="flex mt">
+      <div className={`${styles.flex} ${styles.mt}`}>
         <FormField label="Unit" labelWidth={8} inputEl={<Input value={units} disabled />} />
         <div />
       </div>
