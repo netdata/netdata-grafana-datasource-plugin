@@ -1,9 +1,7 @@
 import React, { ChangeEvent } from 'react';
-import { LegacyForms } from '@grafana/ui';
+import { InlineField, SecretInput } from '@grafana/ui';
 import { DataSourcePluginOptionsEditorProps } from '@grafana/data';
 import { MyDataSourceOptions, MySecureJsonData } from './shared/types';
-
-const { SecretFormField } = LegacyForms;
 
 interface Props extends DataSourcePluginOptionsEditorProps<MyDataSourceOptions, MySecureJsonData> {}
 
@@ -34,19 +32,15 @@ export const ConfigEditor: React.FC<Props> = ({ onOptionsChange, options }) => {
   };
 
   return (
-    <div className="gf-form-group">
-      <div className="gf-form">
-        <SecretFormField
-          isConfigured={secureJsonFields && secureJsonFields.apiToken}
-          value={secureJsonData?.apiToken || ''}
-          label="API Token"
-          placeholder="Your Netdata Cloud API Token"
-          labelWidth={6}
-          inputWidth={20}
-          onReset={onResetAPIToken}
-          onChange={onAPITokenChange}
-        />
-      </div>
-    </div>
+    <InlineField label="API Token" labelWidth={20} tooltip="Your Netdata Cloud API Token">
+      <SecretInput
+        isConfigured={secureJsonFields && secureJsonFields.apiToken}
+        value={secureJsonData?.apiToken || ''}
+        placeholder="Your Netdata Cloud API Token"
+        width={40}
+        onReset={onResetAPIToken}
+        onChange={onAPITokenChange}
+      />
+    </InlineField>
   );
 };

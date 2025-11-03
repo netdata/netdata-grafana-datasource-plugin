@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Input, LegacyForms, Select, useStyles2 } from '@grafana/ui';
+import { Input, InlineField, InlineFieldRow, Select, useStyles2 } from '@grafana/ui';
 import { QueryEditorProps, SelectableValue } from '@grafana/data';
 import { css } from '@emotion/css';
 import { DataSource } from './datasource';
@@ -15,21 +15,9 @@ import PubSub from 'pubsub-js';
 
 type Props = QueryEditorProps<DataSource, MyQuery, MyDataSourceOptions>;
 
-const { FormField } = LegacyForms;
-
 const getStyles = () => ({
   mt: css`
-    margin-top: 1em;
-  `,
-  flex: css`
-    display: flex;
-    justify-content: space-between;
-    & > * {
-      flex: 1;
-    }
-    & .gf-form-input {
-      width: 100% !important;
-    }
+    margin-top: 8px;
   `,
 });
 
@@ -283,143 +271,117 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, range, onChange, onRu
 
   return (
     <>
-      <div className={`${styles.flex} ${styles.mt}`}>
-        <FormField
-          label="Space*"
-          inputEl={
-            <Select options={spaces} value={selectedSpace} onChange={onSpaceIdChange} allowCustomValue isSearchable />
-          }
-        />
+      <InlineFieldRow className={styles.mt}>
+        <InlineField label="Space*" grow>
+          <Select options={spaces} value={selectedSpace} onChange={onSpaceIdChange} allowCustomValue isSearchable />
+        </InlineField>
 
-        <FormField
-          label="Room*"
-          inputEl={
-            <Select options={rooms} value={selectedRoom} onChange={onRoomIdChange} allowCustomValue isSearchable />
-          }
-        />
-      </div>
+        <InlineField label="Room*" grow>
+          <Select options={rooms} value={selectedRoom} onChange={onRoomIdChange} allowCustomValue isSearchable />
+        </InlineField>
+      </InlineFieldRow>
 
-      <div className={styles.mt}>
-        <FormField
-          label="Nodes"
-          tooltip="No selected Nodes means 'All Nodes' from the Room"
-          inputEl={
-            <Select
-              options={nodeList}
-              value={selectedNodes}
-              onChange={onNodesChange}
-              allowCustomValue
-              isSearchable
-              isMulti
-            />
-          }
-        />
-      </div>
-      <div className={`${styles.flex} ${styles.mt}`}>
-        <FormField
-          label="Context*"
-          inputEl={
-            <Select
-              options={contexts}
-              value={selectedContext}
-              onChange={onContextIdChange}
-              allowCustomValue
-              isSearchable
-            />
-          }
-        />
+      <InlineFieldRow className={styles.mt}>
+        <InlineField label="Nodes" tooltip="No selected Nodes means 'All Nodes' from the Room" grow>
+          <Select
+            options={nodeList}
+            value={selectedNodes}
+            onChange={onNodesChange}
+            allowCustomValue
+            isSearchable
+            isMulti
+          />
+        </InlineField>
+      </InlineFieldRow>
 
-        <FormField
-          label="Dimensions"
-          inputEl={
-            <Select
-              options={allDimensions}
-              value={selectedDimensions}
-              onChange={onDimensionsChange}
-              allowCustomValue
-              isSearchable
-              isMulti
-            />
-          }
-        />
-      </div>
+      <InlineFieldRow className={styles.mt}>
+        <InlineField label="Context*" grow>
+          <Select
+            options={contexts}
+            value={selectedContext}
+            onChange={onContextIdChange}
+            allowCustomValue
+            isSearchable
+          />
+        </InlineField>
 
-      <div className={`${styles.flex} ${styles.mt}`}>
-        <FormField
-          label="Grouping by*"
-          inputEl={
-            <Select
-              options={groupingByList}
-              value={selectedGroupBy}
-              onChange={onGroupByChange}
-              allowCustomValue
-              isSearchable
-            />
-          }
-        />
-        <FormField
+        <InlineField label="Dimensions" grow>
+          <Select
+            options={allDimensions}
+            value={selectedDimensions}
+            onChange={onDimensionsChange}
+            allowCustomValue
+            isSearchable
+            isMulti
+          />
+        </InlineField>
+      </InlineFieldRow>
+
+      <InlineFieldRow className={styles.mt}>
+        <InlineField label="Grouping by*" grow>
+          <Select
+            options={groupingByList}
+            value={selectedGroupBy}
+            onChange={onGroupByChange}
+            allowCustomValue
+            isSearchable
+          />
+        </InlineField>
+
+        <InlineField
           label="Grouping function*"
           tooltip="The aggregation function to be applied when multiple data sources exists for one node (multiple instances). This is disabled when not applicable."
-          labelWidth={10}
-          inputEl={
-            <Select
-              disabled={!isGroupFunctionAvailable()}
-              options={Methods}
-              value={selectedMethod}
-              onChange={onMethodChange}
-              allowCustomValue
-              isSearchable
-            />
-          }
-        />
-        <FormField
-          label="Aggregation function*"
-          tooltip="Aggregation function over time"
-          labelWidth={11}
-          inputEl={
-            <Select
-              options={Aggreagations}
-              value={selectedAggregations}
-              onChange={onAggreagationChange}
-              allowCustomValue
-              isSearchable
-            />
-          }
-        />
-      </div>
+          grow
+        >
+          <Select
+            disabled={!isGroupFunctionAvailable()}
+            options={Methods}
+            value={selectedMethod}
+            onChange={onMethodChange}
+            allowCustomValue
+            isSearchable
+          />
+        </InlineField>
 
-      <div className={`${styles.flex} ${styles.mt}`}>
-        <FormField
-          label="Filter by"
-          inputEl={
-            <Select
-              options={filterList}
-              value={selectedFilter}
-              onChange={onFilterByChange}
-              allowCustomValue
-              isSearchable
-            />
-          }
-        />
-        <FormField
-          label="Value"
-          labelWidth={8}
-          inputEl={
-            <Select
-              options={filterByValues}
-              value={selectedFilterValue}
-              onChange={onFilterValueChange}
-              allowCustomValue
-              isSearchable
-            />
-          }
-        />
-      </div>
+        <InlineField label="Aggregation function*" tooltip="Aggregation function over time" grow>
+          <Select
+            options={Aggreagations}
+            value={selectedAggregations}
+            onChange={onAggreagationChange}
+            allowCustomValue
+            isSearchable
+          />
+        </InlineField>
+      </InlineFieldRow>
 
-      <div className={`${styles.flex} ${styles.mt}`}>
-        <FormField label="Unit" labelWidth={8} inputEl={<Input value={units} disabled />} />
+      <InlineFieldRow className={styles.mt}>
+        <InlineField label="Filter by" grow>
+          <Select
+            options={filterList}
+            value={selectedFilter}
+            onChange={onFilterByChange}
+            allowCustomValue
+            isSearchable
+          />
+        </InlineField>
+
+        <InlineField label="Value" grow>
+          <Select
+            options={filterByValues}
+            value={selectedFilterValue}
+            onChange={onFilterValueChange}
+            allowCustomValue
+            isSearchable
+          />
+        </InlineField>
+      </InlineFieldRow>
+
+      <InlineFieldRow className={styles.mt}>
+        <InlineField label="Unit" grow>
+          <Input value={units} disabled />
+        </InlineField>
         <div />
-      </div>
+      </InlineFieldRow>
     </>
   );
 };
