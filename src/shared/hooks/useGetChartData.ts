@@ -36,56 +36,21 @@ export const useGetChartData = async ({
 
   switch (groupBy) {
     case 'node':
-      metrics = [
-        {
-          group_by: ['chart', 'node'],
-          group_by_label: [],
-          aggregation: 'sum',
-        },
-        {
-          group_by: ['node'],
-          group_by_label: [],
-          aggregation: method,
-        },
-      ];
+      metrics = [{ aggregation: method, groupBy: ['node'], group_by_label: [] }];
       break;
     case 'dimension':
-      metrics = [
-        {
-          group_by: ['dimension'],
-          group_by_label: [],
-          aggregation: method,
-        },
-      ];
+      metrics = [{ group_by: ['dimension'], group_by_label: [], aggregation: method }];
       break;
     case 'instance':
-      metrics = [
-        {
-          group_by: ['chart', 'node'],
-          group_by_label: [],
-          aggregation: 'sum',
-        },
-      ];
+      metrics = [{ aggregation: method, groupBy: ['instance'], group_by_label: [] }];
       break;
     default:
-      metrics = [
-        {
-          group_by: ['chart'],
-          group_by_label: groupBy,
-          aggregation: 'sum',
-        },
-        {
-          group_by: [],
-          group_by_label: groupBy,
-          aggregation: 'avg',
-        },
-      ];
+      metrics = [{ aggregation: method, groupBy: ['label'], group_by_label: [groupBy] }];
       break;
   }
 
-  const defaultScopeValue = [];
   const defaultSelectorValue = ['*'];
-  const labels = filterBy && filterValue ? [`${filterBy}:${filterValue}`] : null;
+  const labels = filterBy && filterValue ? [`${filterBy}:${filterValue}`] : [];
 
   return await Post({
     path: `/v3/spaces/${spaceId}/rooms/${roomId}/data`,
@@ -97,14 +62,14 @@ export const useGetChartData = async ({
         contexts: [contextId],
         nodes,
         dimensions,
-        labels: labels || defaultScopeValue,
+        labels,
       },
       selectors: {
         contexts: ['*'],
         nodes: ['*'],
         instances: ['*'],
         dimensions: dimensions.length ? dimensions : defaultSelectorValue,
-        labels: labels || defaultSelectorValue,
+        labels: labels.length ? labels : defaultSelectorValue,
       },
       aggregations: {
         metrics,
