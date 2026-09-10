@@ -8,6 +8,8 @@ import {
 } from '@grafana/data';
 import { useGetChartData } from 'shared/hooks/useGetChartData';
 import { Get } from 'shared/utils/request';
+import { getSeriesDescriptors } from 'shared/utils/series';
+import { chartDataTopic } from 'shared/utils/topics';
 import { MyQuery, MyDataSourceOptions } from './shared/types';
 import PubSub from 'pubsub-js';
 
@@ -70,17 +72,21 @@ export class DataSource extends DataSourceApi<MyQuery, MyDataSourceOptions> {
           to: Math.floor(to / 1000), // this value in seconds
         })
           .then((response: any) => {
-            PubSub.publish('CHART_DATA', response);
+            // scoped to this query, so sibling QueryEditor rows keep their own option lists
+            PubSub.publish(chartDataTopic(refId), response);
+
+            const series = getSeriesDescriptors(response.data);
 
             const frame = new MutableDataFrame({
               refId,
-              fields: response.data.result.labels.map((id: string, i: number) => {
-                const node = response.data.summary.nodes.find((n: any) => n.mg === id);
-                return {
-                  name: node?.nm || id,
-                  type: i === 0 ? FieldType.time : FieldType.number,
-                };
-              }),
+              fields: [
+                { name: 'time', type: FieldType.time },
+                ...series.map(({ name, labels }) => ({
+                  name,
+                  labels,
+                  type: FieldType.number,
+                })),
+              ],
             });
 
             const valueIndex = response.data.result.point.value;

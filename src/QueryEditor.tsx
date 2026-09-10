@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Input, InlineField, InlineFieldRow, Select, useStyles2 } from '@grafana/ui';
+import { Input, InlineField, InlineFieldRow, MultiSelect, Select, useStyles2 } from '@grafana/ui';
 import { QueryEditorProps, SelectableValue } from '@grafana/data';
 import { css } from '@emotion/css';
 import { DataSource } from './datasource';
@@ -10,7 +10,14 @@ import { useFetchContexts } from 'shared/hooks/useFetchContexts';
 import { useFetchNodes } from 'shared/hooks/useFetchNodes';
 import { Aggreagations, GroupByList, Methods } from 'shared/constants';
 import { Dropdown } from 'shared/types/dropdown.interface';
-import { getDimensions, getFilters, getGroupingByList, defaultFilter } from 'shared/utils/transformations';
+import {
+  getDimensions,
+  getFilters,
+  getGroupingByList,
+  defaultFilter,
+  normalizeGroupBy,
+} from 'shared/utils/transformations';
+import { chartDataTopic } from 'shared/utils/topics';
 import PubSub from 'pubsub-js';
 
 type Props = QueryEditorProps<DataSource, MyQuery, MyDataSourceOptions>;
@@ -43,7 +50,7 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, range, onChange, onRu
     value: query.contextId,
   });
   const [selectedDimensions, setSelectedDimensions] = React.useState<Dropdown[]>();
-  const [selectedGroupBy, setSelectedGroupBy] = React.useState<Dropdown>(GroupByList[0]);
+  const [selectedGroupBy, setSelectedGroupBy] = React.useState<Dropdown[]>([GroupByList[0]]);
   const [selectedMethod, setSelectedMethod] = React.useState<Dropdown>(Methods[0]);
   const [selectedAggregations, setSelectedAggregations] = React.useState<Dropdown>(Aggreagations[0]);
   const [filterByValues, setFilterByValues] = React.useState<Dropdown[]>([]);
@@ -75,25 +82,27 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, range, onChange, onRu
   };
 
   const isGroupFunctionAvailable = React.useCallback(() => {
-    if (groupBy === 'instance' || selectedGroupBy?.value === 'instance') {
+    const active = [...normalizeGroupBy(groupBy), ...selectedGroupBy.map(({ value }) => value)];
+
+    if (active.includes('instance')) {
       return false;
     }
     if (totalInstances === 1) {
       return false;
     }
-    if (groupBy === 'dimension' || selectedGroupBy?.value === 'dimension') {
+    if (active.includes('dimension')) {
       return true;
     }
     return totalInstances > 0 && totalInstances > totalNodes;
   }, [totalInstances, groupBy, totalNodes, selectedGroupBy]);
 
   React.useEffect(() => {
-    PubSub.subscribe('CHART_DATA', mySubscriber);
+    const token = PubSub.subscribe(chartDataTopic(query.refId), mySubscriber);
 
     return () => {
-      PubSub.unsubscribe(mySubscriber);
+      PubSub.unsubscribe(token);
     };
-  }, []);
+  }, [query.refId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   React.useEffect(() => {
     if (spaceId && spaces.length > 0) {
@@ -145,8 +154,10 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, range, onChange, onRu
       setSelectedDimensions(tempDimensions);
     }
 
-    if (groupBy) {
-      setSelectedGroupBy({ label: groupBy, value: groupBy });
+    const groupByList = normalizeGroupBy(groupBy);
+
+    if (groupByList.length) {
+      setSelectedGroupBy(groupByList.map((value) => ({ label: value, value })));
     }
   }, [dimensions, groupBy]);
 
@@ -165,7 +176,7 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, range, onChange, onRu
     setSelectedNodes([]);
     setSelectedContext({});
     setSelectedDimensions([]);
-    setSelectedGroupBy(GroupByList[0]);
+    setSelectedGroupBy([GroupByList[0]]);
     setSelectedFilter({});
     setSelectedFilterValue({});
     setSelectedMethod(Methods[0]);
@@ -183,7 +194,7 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, range, onChange, onRu
     setSelectedNodes([]);
     setSelectedContext({});
     setSelectedDimensions([]);
-    setSelectedGroupBy(GroupByList[0]);
+    setSelectedGroupBy([GroupByList[0]]);
     setSelectedFilter({});
     setSelectedFilterValue({});
     setSelectedMethod(Methods[0]);
@@ -200,7 +211,7 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, range, onChange, onRu
 
     // reset the rest of inputs
     setSelectedDimensions([]);
-    setSelectedGroupBy(GroupByList[0]);
+    setSelectedGroupBy([GroupByList[0]]);
     setSelectedFilter({});
     setSelectedFilterValue({});
     setSelectedMethod(Methods[0]);
@@ -215,7 +226,7 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, range, onChange, onRu
 
     // reset the rest of inputs
     setSelectedDimensions([]);
-    setSelectedGroupBy(GroupByList[0]);
+    setSelectedGroupBy([GroupByList[0]]);
     setSelectedFilter({});
     setSelectedFilterValue({});
     setSelectedMethod(Methods[0]);
@@ -233,9 +244,11 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, range, onChange, onRu
     onRunQuery();
   };
 
-  const onGroupByChange = (v: SelectableValue<string>) => {
-    setSelectedGroupBy(v);
-    onChange({ ...query, groupBy: v.value });
+  const onGroupByChange = (v: Array<SelectableValue<string>>) => {
+    const data: Dropdown[] = (v || []).filter(({ value }) => !!value) as Dropdown[];
+
+    setSelectedGroupBy(data);
+    onChange({ ...query, groupBy: data.map(({ value }) => value as string) });
     onRunQuery();
   };
 
@@ -318,8 +331,12 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, range, onChange, onRu
       </InlineFieldRow>
 
       <InlineFieldRow className={styles.mt}>
-        <InlineField label="Grouping by*" grow>
-          <Select
+        <InlineField
+          label="Grouping by*"
+          tooltip="Select more than one to split the series further, e.g. node together with a label to tell hosts apart in a single panel."
+          grow
+        >
+          <MultiSelect
             options={groupingByList}
             value={selectedGroupBy}
             onChange={onGroupByChange}

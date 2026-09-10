@@ -5,7 +5,8 @@ export interface MyQuery extends DataQuery {
   roomId?: string;
   contextId?: string;
   nodes?: string[];
-  groupBy?: string;
+  // string is kept for dashboards saved before multi-grouping; normalizeGroupBy() collapses both forms
+  groupBy?: string | string[];
   method?: string;
   dimensions?: string[];
   group?: string;
