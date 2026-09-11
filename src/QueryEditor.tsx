@@ -69,6 +69,13 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, range, onChange, onRu
 
   const { spaceId, roomId, nodes: allNodes, dimensions, groupBy, contextId, filterBy, filterValue } = query;
 
+  // held locally so typing does not re-run the query on every keystroke
+  const [legend, setLegend] = React.useState<string>(query.legend || '');
+
+  React.useEffect(() => {
+    setLegend(query.legend || '');
+  }, [query.legend]);
+
   const mySubscriber = (msg: any, data: any) => {
     const { summary, view } = data?.data || {};
     const { nodes = [], instances = [], labels = [] } = summary || {};
@@ -276,6 +283,15 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, range, onChange, onRu
     onRunQuery();
   };
 
+  const commitLegend = () => {
+    if ((query.legend || '') === legend) {
+      return;
+    }
+
+    onChange({ ...query, legend });
+    onRunQuery();
+  };
+
   const onAggreagationChange = (v: SelectableValue<string>) => {
     setSelectedAggregations(v);
     onChange({ ...query, group: v.value });
@@ -397,7 +413,24 @@ const QueryEditor: React.FC<Props> = ({ datasource, query, range, onChange, onRu
         <InlineField label="Unit" grow>
           <Input value={units} disabled />
         </InlineField>
-        <div />
+
+        <InlineField
+          label="Legend"
+          tooltip="Name the series yourself, e.g. {{node}} or {{node}} - {{mount_point}}. Use {{name}} for the name the query returned, and any label key shown in the legend. Leave empty to let Grafana name the series."
+          grow
+        >
+          <Input
+            value={legend}
+            placeholder="{{node}}"
+            onChange={(e) => setLegend(e.currentTarget.value)}
+            onBlur={commitLegend}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                commitLegend();
+              }
+            }}
+          />
+        </InlineField>
       </InlineFieldRow>
     </>
   );

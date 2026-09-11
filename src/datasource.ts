@@ -10,6 +10,7 @@ import { useGetChartData } from 'shared/hooks/useGetChartData';
 import { Get } from 'shared/utils/request';
 import { getSeriesDescriptors } from 'shared/utils/series';
 import { chartDataTopic } from 'shared/utils/topics';
+import { renderLegend } from 'shared/utils/legend';
 import { MyQuery, MyDataSourceOptions } from './shared/types';
 import PubSub from 'pubsub-js';
 
@@ -40,6 +41,7 @@ export class DataSource extends DataSourceApi<MyQuery, MyDataSourceOptions> {
         filterValue,
         group,
         hide,
+        legend,
       }) => {
         if (hide) {
           return null;
@@ -81,11 +83,18 @@ export class DataSource extends DataSourceApi<MyQuery, MyDataSourceOptions> {
               refId,
               fields: [
                 { name: 'time', type: FieldType.time },
-                ...series.map(({ name, labels }) => ({
-                  name,
-                  labels,
-                  type: FieldType.number,
-                })),
+                ...series.map(({ name, labels }) => {
+                  const displayNameFromDS = renderLegend(legend, name, labels);
+
+                  return {
+                    name,
+                    labels,
+                    type: FieldType.number,
+                    // left unset without a legend template, so Grafana can still disambiguate
+                    // series that share a name across queries
+                    ...(displayNameFromDS ? { config: { displayNameFromDS } } : {}),
+                  };
+                }),
               ],
             });
 

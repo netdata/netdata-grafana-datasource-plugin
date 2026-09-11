@@ -12,6 +12,8 @@ export interface MyQuery extends DataQuery {
   group?: string;
   filterBy?: string;
   filterValue?: string;
+  // legend template, e.g. "{{node}}"; empty leaves the naming to Grafana
+  legend?: string;
 }
 
 /**
