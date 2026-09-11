@@ -50,6 +50,12 @@ export const getSeriesDescriptors = (data: any): SeriesDescriptor[] => {
     }
   });
 
+  // Groupings such as `dimension` leave the node out of the series id entirely. With a single node
+  // in scope every series still belongs to it, so the identity is recoverable; with several, the
+  // series genuinely aggregates all of them and must stay unlabelled. `summary.nodes` is the only
+  // valid source here - `agents` names whichever agent served the query, which is a different node.
+  const soleNode = nodes.length === 1 ? nodes[0] : undefined;
+
   return seriesIds.map((seriesId, index) => {
     const labels: Labels = {};
 
@@ -63,7 +69,7 @@ export const getSeriesDescriptors = (data: any): SeriesDescriptor[] => {
 
     // the node identity is not a Netdata label, so it has to come from the summary;
     // a real label named "node" wins, to avoid rewriting collected data
-    const node = findNode(seriesId, nodesByMachineGuid);
+    const node = findNode(seriesId, nodesByMachineGuid) ?? soleNode;
 
     if (node?.nm && labels.node === undefined) {
       labels.node = node.nm;

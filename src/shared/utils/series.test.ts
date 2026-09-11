@@ -105,6 +105,49 @@ describe('getSeriesDescriptors', () => {
     expect(getSeriesDescriptors(data)[0].labels).toEqual({ node: 'k8s-a' });
   });
 
+  describe('when the grouping does not encode the node (ticket 835)', () => {
+    // captured from a real query: one node in scope, grouped by dimension, so the
+    // series id is a bare "used" and carries no machine guid to match against
+    const groupedByDimension = {
+      summary: { nodes: [{ mg: '7105e19c-ddbc-11ec-944e-324165a44248', nd: 'nd-a', nm: 'plaka-parent' }] },
+      // the agent that served the query is a different node - it must never be used as the identity
+      agents: [{ mg: '25d148e4-603c-11ed-b52e-d85ed30ec5e6', nd: 'nd-b', nm: 'costa-desktop' }],
+      view: {
+        dimensions: {
+          grouped_by: ['dimension'],
+          ids: ['used'],
+          names: ['used'],
+          labels: { mount_point: [['/']], filesystem: [['ext4']] },
+        },
+      },
+      result: { labels: ['time', 'used'] },
+    };
+
+    it('labels the series with the only node in scope', () => {
+      expect(getSeriesDescriptors(groupedByDimension)).toEqual([
+        { name: 'used', labels: { mount_point: '/', filesystem: 'ext4', node: 'plaka-parent' } },
+      ]);
+    });
+
+    it('never takes the identity from the agent that served the query', () => {
+      expect(getSeriesDescriptors(groupedByDimension)[0].labels.node).not.toBe('costa-desktop');
+    });
+
+    it('adds no node label when the series aggregates several nodes', () => {
+      const acrossNodes = {
+        ...groupedByDimension,
+        summary: {
+          nodes: [
+            { mg: '7105e19c-ddbc-11ec-944e-324165a44248', nd: 'nd-a', nm: 'plaka-parent' },
+            { mg: '25d148e4-603c-11ed-b52e-d85ed30ec5e6', nd: 'nd-b', nm: 'costa-desktop' },
+          ],
+        },
+      };
+
+      expect(getSeriesDescriptors(acrossNodes)[0].labels).toEqual({ mount_point: '/', filesystem: 'ext4' });
+    });
+  });
+
   it('falls back to the series id when names are absent', () => {
     const data = {
       summary: { nodes: [] },
