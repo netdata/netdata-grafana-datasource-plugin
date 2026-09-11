@@ -1,5 +1,6 @@
-import { GroupByList, Methods } from './../constants';
+import { Methods } from './../constants';
 import { Post } from 'shared/utils/request';
+import { buildGrouping } from 'shared/utils/grouping';
 
 type UseGetChartDataType = {
   from: number;
@@ -9,7 +10,7 @@ type UseGetChartDataType = {
   nodes?: string[];
   dimensions?: string[];
   contextId?: string;
-  groupBy?: string;
+  groupBy?: string | string[];
   method?: string;
   group?: string;
   filterBy?: string;
@@ -25,29 +26,14 @@ export const useGetChartData = async ({
   contextId,
   filterBy,
   filterValue,
-  groupBy = GroupByList[0].value,
+  groupBy,
   method = Methods[0].value,
   group = 'average',
   dimensions = [],
   from,
   to,
 }: UseGetChartDataType) => {
-  let metrics = [];
-
-  switch (groupBy) {
-    case 'node':
-      metrics = [{ aggregation: method, group_by: ['node'], group_by_label: [] }];
-      break;
-    case 'dimension':
-      metrics = [{ group_by: ['dimension'], group_by_label: [], aggregation: method }];
-      break;
-    case 'instance':
-      metrics = [{ aggregation: method, group_by: ['instance'], group_by_label: [] }];
-      break;
-    default:
-      metrics = [{ aggregation: method, group_by: ['label'], group_by_label: [groupBy] }];
-      break;
-  }
+  const metrics = [{ aggregation: method, ...buildGrouping(groupBy) }];
 
   const defaultSelectorValue = ['*'];
   const labels = filterBy && filterValue ? [`${filterBy}:${filterValue}`] : [];
@@ -57,7 +43,8 @@ export const useGetChartData = async ({
     baseUrl,
     data: {
       format: 'json2',
-      options: ['jsonwrap', 'flip', 'ms'],
+      // `group-by-labels` is what makes view.dimensions.labels present in the response
+      options: ['jsonwrap', 'flip', 'ms', 'group-by-labels'],
       scope: {
         contexts: [contextId],
         nodes,
