@@ -57,6 +57,14 @@ jobs:
       - name: Build and test frontend
         run: yarn build
 
+      - name: Check compatibility with minimum supported Grafana version
+        run: |
+          MIN_VERSION=$(jq -r '.dependencies.grafanaDependency' src/plugin.json | sed -E 's/^>=\s*//')
+          echo "Checking against Grafana ${MIN_VERSION}"
+          npx --yes @grafana/levitate@0.17.3 is-compatible \
+            --path src/module.ts \
+            --target "@grafana/data@${MIN_VERSION},@grafana/ui@${MIN_VERSION},@grafana/runtime@${MIN_VERSION}"
+
       - name: Setup build environment
         id: build_environment
         run: echo "BUILD_VERSION=$(jq -r .version package.json)" >> $GITHUB_OUTPUT
