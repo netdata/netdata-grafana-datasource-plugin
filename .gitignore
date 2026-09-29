@@ -26,5 +26,8 @@ work/
 ci/
 e2e-results/
 
+# Caches
+.eslintcache
+
 # Editor
 .idea

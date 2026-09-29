@@ -32,3 +32,12 @@ export const getGroupingByList = (labels: any[]) => {
 
   return [...GroupByList, ...labels.map((label: any) => ({ value: label.id, label: label.id }))];
 };
+
+// Dashboards saved before multi-grouping stored a single string; both forms must keep working.
+export const normalizeGroupBy = (groupBy?: string | string[]): string[] => {
+  if (!groupBy) {
+    return [];
+  }
+
+  return Array.isArray(groupBy) ? groupBy : [groupBy];
+};

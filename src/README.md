@@ -39,3 +39,22 @@ Once you have all your nodes connected to Netdata Hub you must proceed with crea
 Once you have added your API token to Netdata data source plugin you’re ready to start taking advantage of Netdata’s troubleshooting capabilities in Grafana by starting creating your charts and dashboards!
 
 ![image](https://user-images.githubusercontent.com/82235632/189398814-1efbf1c7-1a62-4d5f-abe8-6a9297a3f008.png)
+
+## Naming series in a panel
+
+Each series carries the labels behind it — the node it came from, plus every label Netdata collected
+for it (`mount_point`, `filesystem`, and so on). The **Legend** field of the query editor turns those
+into the name shown in the panel:
+
+| Legend | Result |
+| --- | --- |
+| _(empty)_ | Grafana names the series, using the name the query returned |
+| `{{node}}` | `plaka-parent` |
+| `{{node}} - {{mount_point}}` | `plaka-parent - /` |
+| `{{name}} on {{node}}` | `used on plaka-parent` |
+
+`{{name}}` is the name the query returned; every other token is a label key. A token that matches no
+label resolves to an empty string.
+
+To tell several nodes apart in one panel, select them all under **Nodes** and add `node` to
+**Grouping by** — combine it with a label, such as `mount_point`, to split the series further.
